@@ -31,12 +31,69 @@
   ******************************************************************************
   */
 
-/**
-  * @}
-  */
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __MXCONSTANTS_H
+#define __MXCONSTANTS_H
 
-/**
-  * @}
-  */
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+/* Includes ------------------------------------------------------------------*/
+#include "stm32f4xx_hal.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
+
+/* Exported types ------------------------------------------------------------*/
+/* USER CODE BEGIN ET */
+
+/* USER CODE END ET */
+
+/* Exported constants --------------------------------------------------------*/
+/* USER CODE BEGIN EC */
+
+/* USER CODE END EC */
+
+/* Exported macro ------------------------------------------------------------*/
+/* USER CODE BEGIN EM */
+
+/* USER CODE END EM */
+
+/* Exported functions prototypes ---------------------------------------------*/
+
+
+/* USER CODE BEGIN EFP */
+
+/* USER CODE END EFP */
+
+/* Private defines -----------------------------------------------------------*/
+#define BLE_IRQ_Pin             GPIO_PIN_4
+#define BLE_IRQ_Port            GPIOA
+#define LSM6DS33_CS_Pin         GPIO_PIN_8
+#define LSM6DS33_CS_Port        GPIOA
+#define BLE_CS_Pin              GPIO_PIN_0
+#define BLE_CS_Port             GPIOB
+#define BLE_RSTN_Pin            GPIO_PIN_2
+#define BLE_RSTN_Port           GPIOB
+#define LED3_Pin                GPIO_PIN_3
+#define LED3_Port               GPIOB
+#define LED2_Pin                GPIO_PIN_4
+#define LED2_Port               GPIOB
+#define LPS25H_CS_Pin           GPIO_PIN_10
+#define LPS25H_CS_Port          GPIOB
+#define LIS3MDL_CS_Pin          GPIO_PIN_10
+#define LIS3MDL_CS_Port         GPIOB
+/* USER CODE BEGIN Private defines */
+
+/* USER CODE END Private defines */
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* __MXCONSTANTS_H */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
