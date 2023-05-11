@@ -4,6 +4,11 @@
  *  Created on: May 3, 2023
  *      Author: Mai Huynh Long Nhan
  */
+#include "stm32f4xx_hal.h"
+#include "mxconstants.h"
+
+extern SPI_HandleTypeDef hspi1;
+extern SPI_HandleTypeDef hspi2;
 
 #ifndef BAROMETER_DRIVER_H_
 #define BAROMETER_DRIVER_H_
@@ -14,7 +19,7 @@
 #ifdef BAROMETER_LPS22HD
 /*LPS22HD COMMUNICATION*/
 #define BARO_I2C_ADDRESS_1          0x5D
-#define BARO_I2C_ADDRESS_1          0x5C
+#define BARO_I2C_ADDRESS_2          0x5C
 /*LPS22HD REGISTER - READ ONLY*/
 #define BARO_WHO_I_AM               0x0F
 #define BARO_INT_SOURCE             0x25
@@ -41,8 +46,31 @@
 #define BARO_RPDS_H                 0x19
 #define BARO_RES_CONF               0x1A
 
+/*FUNCITON FOR READ ONLY REGISTERS*/
+uint8_t read_Device_Name(uint8_t *ptr);
+uint8_t read_Init_Source(void);
+uint8_t read_FIFO_Status(void);
+uint8_t read_Baro_Status(void);
+uint8_t read_Baro_Press_Out_XL(void);
+uint8_t read_Baro_Press_Out_L(void);
+uint8_t read_Baro_Press_Out_H(void);
+uint8_t read_Baro_Temp_Out_L(void);
+uint8_t read_Baro_Temp_Out_H(void);
+uint8_t read_Baro_LPFP_RES(void);
+
+/*FUNCITON FOR RW ONLY REGISTERS*/
+uint8_t readDeviceId(void);
+uint8_t readCtrlReg1(void);
+uint8_t readCtrlReg2(void);
+uint8_t readCtrlReg3(void);
+
+
 #endif/*BAROMETER_LPS22HD*/
 
-
+/*PRIVATE FUCNTION*/
+uint8_t _SPI_TransmitReceive(uint8_t *pTxData, uint8_t *pRxData, uint16_t Size);
+uint8_t _SPI_Transmit(uint8_t *pData, uint16_t Size);
+void _baroChipEnable(void);
+void _baroChipDisable(void);
 
 #endif /* BAROMETER_DRIVER_H_ */
