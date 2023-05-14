@@ -82,10 +82,10 @@ extern "C" {
 #define LED3_Port               GPIOB
 #define LED2_Pin                GPIO_PIN_4
 #define LED2_Port               GPIOB
-#define LPS25H_CS_Pin           GPIO_PIN_10
-#define LPS25H_CS_Port          GPIOB
-#define LIS3MDL_CS_Pin          GPIO_PIN_10
-#define LIS3MDL_CS_Port         GPIOB
+#define LPS22H_CS_Pin           GPIO_PIN_13
+#define LPS22H_CS_Port          GPIOC
+#define LIS2MDL_CS_Pin          GPIO_PIN_12
+#define LIS2MDL_CS_Port         GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
