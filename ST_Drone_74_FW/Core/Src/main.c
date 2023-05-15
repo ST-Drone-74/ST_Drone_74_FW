@@ -36,6 +36,8 @@
 #include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
+//#include <mxconstants.h>
+
 #include <ahrs.h>
 #include <flight_control.h>
 #include <pid_control.h>
@@ -70,9 +72,10 @@ static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM9_Init(void);
 static void MX_USART1_UART_Init(void);
+void Error_Handler(void);
 
 /* USER CODE BEGIN PFP */
-
+uint8_t campass_id;
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
