@@ -36,6 +36,8 @@
 #include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
+//#include <mxconstants.h>
+
 #include <ahrs.h>
 #include <flight_control.h>
 #include <pid_control.h>
@@ -70,6 +72,7 @@ static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);
 static void MX_TIM9_Init(void);
 static void MX_USART1_UART_Init(void);
+void Error_Handler(void);
 
 /* USER CODE BEGIN PFP */
 
@@ -127,7 +130,7 @@ int main(void)
 */
 void SystemClock_Config(void)
 {
-
+#ifdef CUBEMX_USER_CLOCK_CFG
   RCC_OscInitTypeDef RCC_OscInitStruct;
   RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
@@ -155,7 +158,49 @@ void SystemClock_Config(void)
   HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
 
   HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+#else
+  RCC_OscInitTypeDef RCC_OscInitStruct;
+    RCC_ClkInitTypeDef RCC_ClkInitStruct;
 
+    /**Configure the main internal regulator output voltage*/
+  	__HAL_RCC_PWR_CLK_ENABLE();
+
+  	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE2);
+
+  	  /**Initializes the CPU, AHB and APB busses clocks
+  	  */
+  	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  	RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  	RCC_OscInitStruct.PLL.PLLM = 16;
+  	RCC_OscInitStruct.PLL.PLLN = 336;
+  	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+  	RCC_OscInitStruct.PLL.PLLQ = 7;
+
+  	HAL_RCC_OscConfig(&RCC_OscInitStruct);
+
+  	  /**Initializes the CPU, AHB and APB busses clocks
+  	  */
+  	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+  								|RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  	HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2);
+
+  	  /**Configure the Systick interrupt time
+  	  */
+  	HAL_SYSTICK_Config(HAL_RCC_GetHCLKFreq()/1000);
+
+  	  /**Configure the Systick
+  	  */
+  	HAL_SYSTICK_CLKSourceConfig(SYSTICK_CLKSOURCE_HCLK);
+
+  	/* SysTick_IRQn interrupt configuration */
+  	HAL_NVIC_SetPriority(SysTick_IRQn, 0, 0);
+#endif
 }
 
 /* ADC1 init function */
@@ -212,19 +257,46 @@ void MX_SPI1_Init(void)
 void MX_SPI2_Init(void)
 {
 
+  /* USER CODE BEGIN SPI2_Init 0 */
+	__SPI2_CLK_ENABLE();
+	__GPIOB_CLK_ENABLE();
+	GPIO_InitTypeDef GPIO_InitStruct;
+	GPIO_InitStruct.Pin = GPIO_PIN_15;
+	GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	GPIO_InitStruct.Speed = GPIO_SPEED_HIGH;
+	GPIO_InitStruct.Alternate = GPIO_AF5_SPI2;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+	GPIO_InitStruct.Pin = GPIO_PIN_13;
+	GPIO_InitStruct.Pull = GPIO_NOPULL;
+	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+  /* USER CODE END SPI2_Init 0 */
+
+  /* USER CODE BEGIN SPI2_Init 1 */
+
+  /* USER CODE END SPI2_Init 1 */
+  /* SPI2 parameter configuration*/
   hspi2.Instance = SPI2;
   hspi2.Init.Mode = SPI_MODE_MASTER;
-  hspi2.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi2.Init.Direction = SPI_DIRECTION_1LINE;
   hspi2.Init.DataSize = SPI_DATASIZE_8BIT;
-  hspi2.Init.CLKPolarity = SPI_POLARITY_LOW;
-  hspi2.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi2.Init.CLKPolarity = SPI_POLARITY_HIGH;
+  hspi2.Init.CLKPhase = SPI_PHASE_2EDGE;
   hspi2.Init.NSS = SPI_NSS_SOFT;
-  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
+  hspi2.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16;
   hspi2.Init.FirstBit = SPI_FIRSTBIT_MSB;
-  hspi2.Init.TIMode = SPI_TIMODE_DISABLED;
-  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLED;
-  hspi2.Init.CRCPolynomial = 10;
-  HAL_SPI_Init(&hspi2);
+  hspi2.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi2.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi2.Init.CRCPolynomial = 7;
+  if (HAL_SPI_Init(&hspi2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI2_Init 2 */
+//  SPI_1LINE_TX(&hspi2);
+  __HAL_SPI_ENABLE(&hspi2);
+  /* USER CODE END SPI2_Init 2 */
 
 }
 
@@ -408,6 +480,21 @@ void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 
 /* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
 
 #ifdef USE_FULL_ASSERT
 
