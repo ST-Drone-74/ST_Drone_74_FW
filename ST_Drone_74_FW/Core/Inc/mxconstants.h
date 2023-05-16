@@ -44,6 +44,9 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+void SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t *val);
+void SPI_Read_nBytes(SPI_HandleTypeDef* xSpiHandle, uint8_t *val, uint8_t size);
+void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
