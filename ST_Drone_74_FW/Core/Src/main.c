@@ -75,7 +75,7 @@ static void MX_USART1_UART_Init(void);
 void Error_Handler(void);
 
 /* USER CODE BEGIN PFP */
-uint8_t campass_id;
+
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
