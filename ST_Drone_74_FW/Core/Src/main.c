@@ -36,7 +36,7 @@
 #include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
-//#include <mxconstants.h>
+#include <mxconstants.h>
 
 #include <ahrs.h>
 #include <flight_control.h>
@@ -110,13 +110,14 @@ int main(void)
   MX_USB_DEVICE_Init();
 
   /* USER CODE BEGIN 2 */
-
+ 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -479,6 +480,99 @@ void MX_GPIO_Init(void)
 
 /* USER CODE BEGIN 4 */
 
+void SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t *val)
+{
+  /* In master RX mode the clock is automaticaly generated on the SPI enable.
+  So to guarantee the clock generation for only one data, the clock must be
+  disabled after the first bit and before the latest bit */
+  /* Interrupts should be disabled during this operation */
+
+  __disable_irq();
+  //GPIOA->BSRR = (uint32_t)GPIO_PIN_8 << 16U;
+  __HAL_SPI_ENABLE(xSpiHandle);
+
+  	__asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+
+
+  __HAL_SPI_DISABLE(xSpiHandle);
+
+  __enable_irq();
+
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_RXNE) != SPI_FLAG_RXNE);
+  /* read the received data */
+  *val = *(__IO uint8_t *) &xSpiHandle->Instance->DR;
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY);
+}
+
+void SPI_Read_nBytes(SPI_HandleTypeDef* xSpiHandle, uint8_t *val, uint8_t size)
+{
+  /* Interrupts should be disabled during this operation */
+  __disable_irq();
+  __HAL_SPI_ENABLE(xSpiHandle);
+
+  /* Transfer loop */
+  while (size > 1U)
+  {
+    /* Check the RXNE flag */
+    if (xSpiHandle->Instance->SR & SPI_FLAG_RXNE)
+    {
+      /* read the received data */
+      *val = *(__IO uint8_t *) &xSpiHandle->Instance->DR;
+      val += sizeof(uint8_t);
+      size--;
+    }
+  }
+}
+
+void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val)
+{
+  /* check TXE flag */
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_TXE) != SPI_FLAG_TXE);
+
+  /* Write the data */
+  *((__IO uint8_t*) &xSpiHandle->Instance->DR) = val;
+
+  /* Wait BSY flag */
+  while ((xSpiHandle->Instance->SR & SPI_SR_TXE) != SPI_SR_TXE);
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY);
+}
 /* USER CODE END 4 */
 
 /**
