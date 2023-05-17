@@ -7,7 +7,7 @@
 #include "stm32f4xx_hal.h"
 #include "mxconstants.h"
 
-extern SPI_HandleTypeDef hspi1;
+
 extern SPI_HandleTypeDef hspi2;
 
 #ifndef BAROMETER_DRIVER_H_
@@ -20,6 +20,7 @@ extern SPI_HandleTypeDef hspi2;
 /*LPS22HD COMMUNICATION*/
 #define BARO_I2C_ADDRESS_1          0x5D
 #define BARO_I2C_ADDRESS_2          0x5C
+#define BARO_DEVICE_NAME            0xB1
 /*LPS22HD REGISTER - READ ONLY*/
 #define BARO_WHO_I_AM               0x0F
 #define BARO_INT_SOURCE             0x25
@@ -47,7 +48,7 @@ extern SPI_HandleTypeDef hspi2;
 #define BARO_RES_CONF               0x1A
 
 /*FUNCITON FOR READ ONLY REGISTERS*/
-uint8_t read_Device_Name(uint8_t *ptr);
+uint8_t barometer_Read_Device_Name(uint8_t *ptr);
 uint8_t read_Init_Source(void);
 uint8_t read_FIFO_Status(void);
 uint8_t read_Baro_Status(void);
@@ -59,18 +60,21 @@ uint8_t read_Baro_Temp_Out_H(void);
 uint8_t read_Baro_LPFP_RES(void);
 
 /*FUNCITON FOR RW ONLY REGISTERS*/
-uint8_t readDeviceId(void);
-uint8_t readCtrlReg1(void);
-uint8_t readCtrlReg2(void);
-uint8_t readCtrlReg3(void);
+uint8_t read_Ctrl_Reg1(uint8_t *rxData);
+uint8_t read_Ctrl_Reg2(uint8_t *rxData);
+uint8_t read_Ctrl_Reg3(uint8_t *rxData);
+uint8_t write_To_Register(uint8_t address, uint8_t *txData);
+uint8_t read_From_Register(uint8_t address, uint8_t *rxData);
 
-
+uint8_t barometer_Init_device(void);
 #endif/*BAROMETER_LPS22HD*/
 
 /*PRIVATE FUCNTION*/
-uint8_t _SPI_TransmitReceive(uint8_t *pTxData, uint8_t *pRxData, uint16_t Size);
-uint8_t _SPI_Transmit(uint8_t *pData, uint16_t Size);
+
 void _baroChipEnable(void);
 void _baroChipDisable(void);
+void barometer_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size );
+void barometer_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t *pBuffer, uint8_t size );
+
 
 #endif /* BAROMETER_DRIVER_H_ */
