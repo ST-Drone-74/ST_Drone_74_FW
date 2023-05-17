@@ -17,6 +17,8 @@ extern SPI_HandleTypeDef hspi2;
 #define MAGNETO_LIS2MDL
 
 #ifdef MAGNETO_LIS2MDL
+
+#define MAG_DEVICE_NAME         0x40
 /*LIS2MDL REGISTER - READ ONLY*/
 #define MAG_WHO_I_AM			0x4F
 #define MAG_INT_SOURCE			0x64
@@ -47,10 +49,7 @@ extern SPI_HandleTypeDef hspi2;
 #endif /* MAGNETO_LIS2MDL */
 
 /*COMPASS CONTROL FUNCTION*/
-void SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t *val);
-void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
-void SPI_Read_nBytes(SPI_HandleTypeDef* xSpiHandle, uint8_t *val, uint8_t size);
-
+uint8_t compass_Read_Device_Name(uint8_t *ptr);
 void Compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size );
 void Compass_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t *pBuffer, uint8_t size );
 

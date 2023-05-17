@@ -6,8 +6,23 @@
  */
 #include <mag_driver.h>
 
+uint8_t compass_Read_Device_Name(uint8_t *ptr)
+{
+    uint8_t val = 0;
+    Compass_SPI_Read(&hspi2, MAG_WHO_I_AM, ptr, 1);
+    if((*ptr) == MAG_DEVICE_NAME)
+    {
+        val = 1;
+    }
+    else
+    {
+        /*read device name fail*/
+        val = 0;
+    }
+    return val;
+}
 
-Compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size )
+void Compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size )
 {
 	/*chip select*/
 	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_RESET);
