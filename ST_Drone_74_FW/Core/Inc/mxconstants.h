@@ -80,7 +80,7 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
 #define BLE_CS_Port             GPIOB
 #define BLE_RSTN_Pin            GPIO_PIN_2
 #define BLE_RSTN_Port           GPIOB
-#define LED3_Pin                GPIO_PIN_3
+#define LED3_Pin                GPIO_PIN_5
 #define LED3_Port               GPIOB
 #define LED2_Pin                GPIO_PIN_4
 #define LED2_Port               GPIOB
