@@ -47,26 +47,47 @@ extern SPI_HandleTypeDef hspi2;
 #define BARO_RPDS_H                 0x19
 #define BARO_RES_CONF               0x1A
 
+/*FIFO MODE ENUM*/
+typedef enum 
+{
+    BYPASS = 0x00,
+    FIFO = 0x20,
+    STREAM = 0x40,
+    DYNAMIC_STREAM = 0xC0,
+    STREAM_2_FIFO = 0x60,
+    BYPASS_2_STREAM = 0x80,
+    BYPASS_2_FIFO = 0xE0
+}Fifo_Mode_e;
+
+/*SENSOR STATE ENUM*/
+typedef enum 
+{
+    SENSOR_ERROR,
+    SENSOR_OK
+}Sensor_State_e;
+
 /*FUNCITON FOR READ ONLY REGISTERS*/
-uint8_t barometer_Read_Device_Name(uint8_t *ptr);
-uint8_t read_Init_Source(void);
-uint8_t read_FIFO_Status(void);
-uint8_t read_Baro_Status(void);
-uint8_t read_Baro_Press_Out_XL(void);
-uint8_t read_Baro_Press_Out_L(void);
-uint8_t read_Baro_Press_Out_H(void);
-uint8_t read_Baro_Temp_Out_L(void);
-uint8_t read_Baro_Temp_Out_H(void);
-uint8_t read_Baro_LPFP_RES(void);
+uint8_t baro_Read_Device_Name(uint8_t *ptr);
+uint8_t baro_read_Init_Source(void);
+uint8_t baro_read_FIFO_Status(void);
+uint8_t baro_read_Baro_Status(void);
+uint8_t baro_read_Baro_Press_Out_XL(void);
+uint8_t baro_read_Baro_Press_Out_L(void);
+uint8_t baro_read_Baro_Press_Out_H(void);
+uint8_t baro_read_Baro_Temp_Out_L(void);
+uint8_t baro_read_Baro_Temp_Out_H(void);
+uint8_t baro_read_Baro_LPFP_RES(void);
 
 /*FUNCITON FOR RW ONLY REGISTERS*/
-uint8_t read_Ctrl_Reg1(uint8_t *rxData);
-uint8_t read_Ctrl_Reg2(uint8_t *rxData);
-uint8_t read_Ctrl_Reg3(uint8_t *rxData);
-uint8_t write_To_Register(uint8_t address, uint8_t *txData);
-uint8_t read_From_Register(uint8_t address, uint8_t *rxData);
+uint8_t baro_write_To_Register(uint8_t address, uint8_t *txData);
+uint8_t baro_read_From_Register(uint8_t address, uint8_t *rxData);
 
-uint8_t barometer_Init_device(void);
+/*SENSOR CONTROL*/
+uint8_t baro_Init_Device(void);
+uint8_t baro_Set_FIFO_Mode(Fifo_Mode_e set_Mode, uint8_t set_level);
+void baro_Reset_FIFO(void);
+uint8_t baro_Read_Pressure(uint32_t *rxData);
+uint8_t baro_Read_Temperature(uint16_t *rxData);
 #endif/*BAROMETER_LPS22HD*/
 
 /*PRIVATE FUCNTION*/
