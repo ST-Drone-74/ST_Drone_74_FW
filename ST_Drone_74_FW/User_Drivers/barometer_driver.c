@@ -106,32 +106,74 @@ void baro_Reset_FIFO(void)
 
 uint8_t baro_Read_Pressure(uint32_t *rxData)
 {
+	uint8_t val = SENSOR_OK;
 	uint8_t rx_Data[3] = {};
-	barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_XL, rx_Data, sizeof(rx_Data)+1);
-	(*rxData) = ((uint32_t)rx_Data[2])<<16 |
-				((uint32_t)rx_Data[1])<<8  |
-				(uint32_t)rx_Data[0];
-	return SENSOR_OK;
+	if(rxData != NULL)
+	{
+		barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_XL, rx_Data, sizeof(rx_Data)+1);
+		(*rxData) = ((uint32_t)rx_Data[2])<<16 |
+					((uint32_t)rx_Data[1])<<8  |
+					(uint32_t)rx_Data[0];
+	}
+	else
+	{
+		val = SENSOR_ERROR;
+	}
+	return val;
+}
+
+uint8_t baro_HPA_Pressure(float *pressure)
+{
+	uint8_t val = SENSOR_OK;
+	uint32_t rawPressure=0x00;
+	if(pressure != NULL)
+	{
+		baro_Read_Pressure(&rawPressure);
+		(*pressure) = (float)(((float)rawPressure)/(float)BARO_SCALING_FACTOR);
+	}
+	else
+	{
+		val = SENSOR_ERROR;
+	}
+	return val;
 }
 
 uint8_t baro_Read_Temperature(uint16_t *rxData)
 {
-
+	uint8_t val = SENSOR_OK;
+	uint8_t rx_Data[2] = {};
+	if(rxData != NULL)
+	{
+		barometer_SPI_Read(&hspi2, BARO_TEMP_OUT_L, rx_Data, sizeof(rx_Data)+1);
+		(*rxData) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+	}
+	else
+	{
+		val = SENSOR_ERROR;
+	}
+	return val;
 }
 
 uint8_t baro_Read_Device_Name(uint8_t *ptr)
 {
     uint8_t val = 0;
-    barometer_SPI_Read(&hspi2, BARO_WHO_I_AM, ptr, 1);
-    if((*ptr) == BARO_DEVICE_NAME)
-    {
-        val = 1;
-    }
-    else
-    {
-        /*read device name fail*/
-        val = 0;
-    }
+	if(ptr != NULL)
+	{
+		barometer_SPI_Read(&hspi2, BARO_WHO_I_AM, ptr, 1);
+		if((*ptr) == BARO_DEVICE_NAME)
+		{
+			val = 1;
+		}
+		else
+		{
+			/*read device name fail*/
+			val = 0;
+		}
+	}
+	else
+	{
+		val = 0;
+	}
     return val;
 }
 uint8_t baro_read_Init_Source(void)
@@ -189,16 +231,6 @@ uint8_t baro_read_Baro_LPFP_RES(void)
 	return reg_return;
 }
 /*PRIVATE FUCNTION*/
-uint8_t _SPI_TransmitReceive(uint8_t *pTxData, uint8_t *pRxData, uint16_t Size)
-{
-    HAL_SPI_TransmitReceive(&hspi2, pTxData, pRxData, Size, 0xFF);
-    return 0;
-}
-uint8_t _SPI_Transmit(uint8_t *pData, uint16_t Size)
-{
-    HAL_SPI_Transmit(&hspi2, pData, Size, 0xFF);
-    return 0;
-}
 void _baroChipEnable(void)
 {
     HAL_GPIO_WritePin(LPS22H_CS_Port, LPS22H_CS_Pin, GPIO_PIN_RESET);
@@ -247,10 +279,10 @@ void barometer_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8
     _baroChipDisable();
 }
 
-uint8_t baro_write_To_Register(uint8_t address, uint8_t *txData)
+uint8_t baro_write_Single_Register(uint8_t address, uint8_t *txData)
 {
 	Sensor_State_e val = SENSOR_OK;
-	if(address != NULL)
+	if((txData != NULL) && (address != 0x00))
 	{
 		barometer_SPI_Write(&hspi2, address, txData, 1);
 		val = SENSOR_OK;
@@ -261,10 +293,10 @@ uint8_t baro_write_To_Register(uint8_t address, uint8_t *txData)
 	}
 	return val;
 }
-uint8_t baro_read_From_Register(uint8_t address, uint8_t *rxData)
+uint8_t baro_read_Single_Register(uint8_t address, uint8_t *rxData)
 {
 	Sensor_State_e val = SENSOR_OK;
-	if(address != NULL)
+	if((rxData != NULL) && (address != 0x00))
 	{
 		barometer_SPI_Read(&hspi2, address, rxData, 1);
 		val = SENSOR_OK;
