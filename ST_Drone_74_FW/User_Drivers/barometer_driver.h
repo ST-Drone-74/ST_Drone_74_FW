@@ -21,6 +21,7 @@ extern SPI_HandleTypeDef hspi2;
 #define BARO_I2C_ADDRESS_1          0x5D
 #define BARO_I2C_ADDRESS_2          0x5C
 #define BARO_DEVICE_NAME            0xB1
+#define BARO_SCALING_FACTOR         4096
 /*LPS22HD REGISTER - READ ONLY*/
 #define BARO_WHO_I_AM               0x0F
 #define BARO_INT_SOURCE             0x25
@@ -79,14 +80,15 @@ uint8_t baro_read_Baro_Temp_Out_H(void);
 uint8_t baro_read_Baro_LPFP_RES(void);
 
 /*FUNCITON FOR RW ONLY REGISTERS*/
-uint8_t baro_write_To_Register(uint8_t address, uint8_t *txData);
-uint8_t baro_read_From_Register(uint8_t address, uint8_t *rxData);
+uint8_t baro_write_Single_Register(uint8_t address, uint8_t *txData);
+uint8_t baro_read_Single_Register(uint8_t address, uint8_t *rxData);
 
 /*SENSOR CONTROL*/
 uint8_t baro_Init_Device(void);
 uint8_t baro_Set_FIFO_Mode(Fifo_Mode_e set_Mode, uint8_t set_level);
 void baro_Reset_FIFO(void);
 uint8_t baro_Read_Pressure(uint32_t *rxData);
+uint8_t baro_HPA_Pressure(float *pressure);
 uint8_t baro_Read_Temperature(uint16_t *rxData);
 #endif/*BAROMETER_LPS22HD*/
 
