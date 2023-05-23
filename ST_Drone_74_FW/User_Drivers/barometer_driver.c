@@ -11,6 +11,8 @@ uint8_t baro_Init_Device(void)
     uint8_t ctrl_reg_1 = 0x31;
     uint8_t ctrl_reg_2 = 0x84;
     uint8_t device_name = 0x00;
+	Fifo_Mode_e  set_Fifo_Mode = BYPASS;
+	uint8_t set_Level = 0x20;
     /*read device name*/
     while((baro_Read_Device_Name(&device_name) != 1))
     {
@@ -28,11 +30,14 @@ uint8_t baro_Init_Device(void)
 		barometer_SPI_Write(&hspi2, BARO_CTRL_REG_1, &ctrl_reg_1, 1);
 		HAL_Delay(1);
 		/*disable i2c*/
-		 barometer_SPI_Read(&hspi2, BARO_CTRL_REG_2, &ctrl_reg_2, 1);
-		 HAL_Delay(1);
-		 ctrl_reg_2 |= 0x08;
-		 barometer_SPI_Write(&hspi2, BARO_CTRL_REG_2, &ctrl_reg_2, 1);
-		 HAL_Delay(1);
+		barometer_SPI_Read(&hspi2, BARO_CTRL_REG_2, &ctrl_reg_2, 1);
+		HAL_Delay(1);
+		ctrl_reg_2 |= 0x08;
+		barometer_SPI_Write(&hspi2, BARO_CTRL_REG_2, &ctrl_reg_2, 1);
+		HAL_Delay(1);
+		/*set FIFO mode when init*/
+		baro_Set_FIFO_Mode(set_Fifo_Mode, set_Level);
+		HAL_Delay(1);
     }
     return 0;
 }
@@ -110,10 +115,31 @@ uint8_t baro_Read_Pressure(uint32_t *rxData)
 	uint8_t rx_Data[3] = {};
 	if(rxData != NULL)
 	{
-		barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_XL, rx_Data, sizeof(rx_Data)+1);
-		(*rxData) = ((uint32_t)rx_Data[2])<<16 |
-					((uint32_t)rx_Data[1])<<8  |
-					(uint32_t)rx_Data[0];
+		switch(baro_Read_Current_FIFO_Mode())
+		{
+			case BYPASS:
+				barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_XL, rx_Data, sizeof(rx_Data)+1);
+				(*rxData) = ((uint32_t)rx_Data[2])<<16 |
+							((uint32_t)rx_Data[1])<<8  |
+							(uint32_t)rx_Data[0];
+			break;
+			
+			case FIFO:
+			break;
+			
+			case STREAM:
+			break;
+			
+			case DYNAMIC_STREAM:
+			break;
+			
+			default:
+				barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_XL, rx_Data, sizeof(rx_Data)+1);
+				(*rxData) = ((uint32_t)rx_Data[2])<<16 |
+							((uint32_t)rx_Data[1])<<8  |
+							(uint32_t)rx_Data[0];
+			break;
+		}
 	}
 	else
 	{
@@ -152,6 +178,49 @@ uint8_t baro_Read_Temperature(uint16_t *rxData)
 		val = SENSOR_ERROR;
 	}
 	return val;
+}
+
+Fifo_Mode_e baro_Read_Current_FIFO_Mode(void)
+{
+	uint8_t fifo_Ctrl_Reg = 0x00;
+	Fifo_Mode_e fifo_Mode = BYPASS;
+	/*read FIFO_CTRL_REG*/
+	baro_read_Single_Register(BARO_FIFO_CTRL, &fifo_Ctrl_Reg);
+	fifo_Ctrl_Reg = fifo_Ctrl_Reg >> 5;
+	/*Compare and return mode of FIFO buffer*/
+	if(fifo_Ctrl_Reg == 0x00)
+	{
+		fifo_Mode = BYPASS;
+	}
+	else if (fifo_Ctrl_Reg == 0x01)
+	{
+		fifo_Mode = FIFO;
+	}
+	else if (fifo_Ctrl_Reg == 0x02)
+	{
+		fifo_Mode = STREAM;
+	}
+	else if (fifo_Ctrl_Reg == 0x03)
+	{
+		fifo_Mode = STREAM_2_FIFO;
+	}
+	else if (fifo_Ctrl_Reg == 0x04)
+	{
+		fifo_Mode = BYPASS_2_STREAM;
+	}
+	else if (fifo_Ctrl_Reg == 0x06)
+	{
+		fifo_Mode = DYNAMIC_STREAM;
+	}
+	else if (fifo_Ctrl_Reg == 0x07)
+	{
+		fifo_Mode = BYPASS_2_FIFO;
+	}
+	else
+	{
+		/*nothing mode*/
+	}
+	return fifo_Mode;
 }
 
 uint8_t baro_Read_Device_Name(uint8_t *ptr)

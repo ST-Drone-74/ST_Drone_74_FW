@@ -90,6 +90,7 @@ void baro_Reset_FIFO(void);
 uint8_t baro_Read_Pressure(uint32_t *rxData);
 uint8_t baro_HPA_Pressure(float *pressure);
 uint8_t baro_Read_Temperature(uint16_t *rxData);
+Fifo_Mode_e baro_Read_Current_FIFO_Mode(void);
 #endif/*BAROMETER_LPS22HD*/
 
 /*PRIVATE FUCNTION*/
