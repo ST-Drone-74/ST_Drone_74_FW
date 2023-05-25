@@ -574,6 +574,7 @@ void SPI_Read_nBytes(SPI_HandleTypeDef* xSpiHandle, uint8_t *val, uint8_t size)
       size--;
     }
   }
+  __enable_irq();
 }
 
 void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val)
