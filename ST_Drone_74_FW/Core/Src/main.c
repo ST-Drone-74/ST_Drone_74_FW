@@ -485,6 +485,8 @@ void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
   /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED3_Port, LED3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED2_Port, LED2_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(LPS22H_CS_Port, LPS22H_CS_Pin, GPIO_PIN_SET);
   HAL_GPIO_WritePin(LSM6DS33_CS_Port, LSM6DS33_CS_Pin, GPIO_PIN_SET);
