@@ -4,14 +4,15 @@
  *  Created on: May 3, 2023
  *      Author: Mai Huynh Long Nhan
  */
+#ifndef BAROMETER_DRIVER_H_
+#define BAROMETER_DRIVER_H_
+
 #include "stm32f4xx_hal.h"
 #include "mxconstants.h"
 
 
 extern SPI_HandleTypeDef hspi2;
 
-#ifndef BAROMETER_DRIVER_H_
-#define BAROMETER_DRIVER_H_
 
 /*TYPE OF BAROMETER DEFINE*/
 #define BAROMETER_LPS22HD
