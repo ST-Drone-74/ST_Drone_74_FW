@@ -350,7 +350,7 @@ void barometer_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8
 
 uint8_t baro_write_Single_Register(uint8_t address, uint8_t *txData)
 {
-	Sensor_State_e val = SENSOR_OK;
+	Baro_State_e val = SENSOR_OK;
 	if((txData != NULL) && (address != 0x00))
 	{
 		barometer_SPI_Write(&hspi2, address, txData, 1);
@@ -364,7 +364,7 @@ uint8_t baro_write_Single_Register(uint8_t address, uint8_t *txData)
 }
 uint8_t baro_read_Single_Register(uint8_t address, uint8_t *rxData)
 {
-	Sensor_State_e val = SENSOR_OK;
+	Baro_State_e val = SENSOR_OK;
 	if((rxData != NULL) && (address != 0x00))
 	{
 		barometer_SPI_Read(&hspi2, address, rxData, 1);

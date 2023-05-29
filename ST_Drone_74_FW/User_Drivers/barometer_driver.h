@@ -67,7 +67,7 @@ typedef enum
 {
     SENSOR_ERROR,
     SENSOR_OK
-}Sensor_State_e;
+}Baro_State_e;
 
 /*FUNCITON FOR READ ONLY REGISTERS*/
 uint8_t baro_Read_Device_Name(uint8_t *ptr);
