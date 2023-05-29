@@ -6,10 +6,20 @@
  */
 #include <mag_driver.h>
 
+uint8_t compass_Init_Device(void)
+{
+	uint8_t device_name = 0x00;
+	while((compass_Read_Device_Name(&device_name) != 1))
+	{
+
+	}
+	return COMP_OK;
+}
+
 uint8_t compass_Read_Device_Name(uint8_t *ptr)
 {
     uint8_t val = 0;
-    Compass_SPI_Read(&hspi2, MAG_WHO_I_AM, ptr, 1);
+    compass_SPI_Read(&hspi2, MAG_WHO_I_AM, ptr, 1);
     if((*ptr) == MAG_DEVICE_NAME)
     {
         val = 1;
@@ -22,10 +32,84 @@ uint8_t compass_Read_Device_Name(uint8_t *ptr)
     return val;
 }
 
-void Compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size )
+void compass_Read_X_Data(uint16_t *ptr)
+{
+
+}
+
+void compass_Read_Y_Data(uint16_t *ptr)
+{
+
+}
+
+void compass_Read_Z_Data(uint16_t *ptr)
+{
+
+}
+
+uint8_t compass_Read_Temp_Out_L(void)
+{
+	return COMP_OK;
+}
+
+uint8_t compass_Read_Temp_Out_H(void)
+{
+	uint8_t rxData = 0x00;
+	compass_Read_Single_Register(MAG_TEMP_OUT_H, &rxData);
+	return rxData;
+}
+
+uint8_t compass_Read_Temperature(uint16_t *ptr)
+{
+	uint8_t val = COMP_OK;
+	uint8_t rx_Data[2] = {};
+	if(ptr != NULL)
+	{
+		compass_SPI_Read(&hspi2, MAG_TEMP_OUT_L, rx_Data, sizeof(rx_Data)+1);
+		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+		val = COMP_OK;
+	}
+	else
+	{
+		val = COMP_ERROR;
+	}
+	return val;
+}
+
+uint8_t compass_Write_Single_Register(uint8_t address, uint8_t *txData)
+{
+	Compass_State_e val = COMP_OK;
+	if((txData != NULL) && (address != 0x00))
+	{
+		compass_SPI_Write(&hspi2, address, txData, 1);
+		val = COMP_OK;
+	}
+	else
+	{
+		val = COMP_ERROR;
+	}
+	return val;
+}
+
+uint8_t compass_Read_Single_Register(uint8_t address, uint8_t *rxData)
+{
+	Compass_State_e val = COMP_OK;
+	if((rxData != NULL) && (address != 0x00))
+	{
+		compass_SPI_Read(&hspi2, address, rxData, 1);
+		val = COMP_OK;
+	}
+	else
+	{
+		val = COMP_ERROR;
+	}
+	return val;
+}
+
+void compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size )
 {
 	/*chip select*/
-	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_RESET);
+	compassEnable();
 	/*write data*/
 	SPI_Write(xSpiHandle, ReadAddr | 0x80);
 
@@ -42,16 +126,16 @@ void Compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *
 		SPI_Read(xSpiHandle, pBuffer);
 	}
 	/*chip deselect*/
-	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_SET);
+	compassDisable();
 
 	SPI_1LINE_TX(xSpiHandle);
 	__HAL_SPI_ENABLE(xSpiHandle);
 }
 
-void Compass_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t *pBuffer, uint8_t size )
+void compass_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t *pBuffer, uint8_t size )
 {
 	/*chip select*/
-	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_RESET);
+	compassEnable();
 
 	SPI_Write(xSpiHandle, WriteAddr);
 
@@ -60,5 +144,15 @@ void Compass_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t
 		SPI_Write(xSpiHandle, pBuffer[i]);
 	}
 	/*chip deselect*/
+	compassDisable();
+}
+
+void compassEnable(void)
+{
+	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_RESET);
+}
+
+void compassDisable(void)
+{
 	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_SET);
 }
