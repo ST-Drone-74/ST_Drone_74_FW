@@ -23,6 +23,7 @@ extern SPI_HandleTypeDef hspi2;
 #define BARO_I2C_ADDRESS_2          0x5C
 #define BARO_DEVICE_NAME            0xB1
 #define BARO_SCALING_FACTOR         4096
+#define BARO_TEMP_SENSITIVE         (float)100.0
 /*LPS22HD REGISTER - READ ONLY*/
 #define BARO_WHO_I_AM               0x0F
 #define BARO_INT_SOURCE             0x25
