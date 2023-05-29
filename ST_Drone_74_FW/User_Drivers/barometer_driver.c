@@ -14,6 +14,7 @@ uint8_t baro_Init_Device(void)
 	Fifo_Mode_e  set_Fifo_Mode = BYPASS;
 	uint8_t set_Level = 0x20;
     /*read device name*/
+	/*Startup sequence*/
     while((baro_Read_Device_Name(&device_name) != 1))
     {
     	/*enable 3wire SPI communication*/
