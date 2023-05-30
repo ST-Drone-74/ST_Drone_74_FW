@@ -48,19 +48,52 @@ uint8_t compass_Read_Device_Name(uint8_t *ptr)
     return val;
 }
 
-void compass_Read_X_Data(uint16_t *ptr)
+uint8_t compass_Read_X_Data(uint16_t *ptr)
 {
-
+	uint8_t val = COMP_OK;
+	uint8_t rx_Data[2] = {};
+	if(ptr != NULL)
+	{
+		compass_SPI_Read(&hspi2, MAG_OUTX_L, rx_Data, sizeof(rx_Data)+1);
+		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+	}
+	else
+	{
+		val = COMP_ERROR;
+	}
+	return val;
 }
 
-void compass_Read_Y_Data(uint16_t *ptr)
+uint8_t compass_Read_Y_Data(uint16_t *ptr)
 {
-
+	uint8_t val = COMP_OK;
+	uint8_t rx_Data[2] = {};
+	if(ptr != NULL)
+	{
+		compass_SPI_Read(&hspi2, MAG_OUTY_L, rx_Data, sizeof(rx_Data)+1);
+		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+	}
+	else
+	{
+		val = COMP_ERROR;
+	}
+	return val;
 }
 
-void compass_Read_Z_Data(uint16_t *ptr)
+uint8_t compass_Read_Z_Data(uint16_t *ptr)
 {
-
+	uint8_t val = COMP_OK;
+	uint8_t rx_Data[2] = {};
+	if(ptr != NULL)
+	{
+		compass_SPI_Read(&hspi2, MAG_OUTZ_L, rx_Data, sizeof(rx_Data)+1);
+		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+	}
+	else
+	{
+		val = COMP_ERROR;
+	}
+	return val;
 }
 
 uint8_t compass_Read_Temp_Out_L(void)
