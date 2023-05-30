@@ -9,9 +9,25 @@
 uint8_t compass_Init_Device(void)
 {
 	uint8_t device_name = 0x00;
+	uint8_t set_Cfg_Reg_A = 0x00;
+	uint8_t set_Cfg_Reg_B = 0x00;
+	uint8_t set_Cfg_Reg_C = 0x00;
 	while((compass_Read_Device_Name(&device_name) != 1))
 	{
-
+		/*soft reset and memory reboot*/
+		set_Cfg_Reg_A = 0x60;
+		compass_Write_Single_Register(MAG_CFG_REG_A, &set_Cfg_Reg_A);
+		HAL_Delay(1000);
+		/*set config register A*/
+		set_Cfg_Reg_A = 0x80;
+		compass_Write_Single_Register(MAG_CFG_REG_A, &set_Cfg_Reg_A);
+		HAL_Delay(1);
+		/*set config register B*/
+		compass_Write_Single_Register(MAG_CFG_REG_B, &set_Cfg_Reg_B);
+		HAL_Delay(1);
+		/*set config register C*/
+		compass_Write_Single_Register(MAG_CFG_REG_C, &set_Cfg_Reg_C);
+		HAL_Delay(1);
 	}
 	return COMP_OK;
 }

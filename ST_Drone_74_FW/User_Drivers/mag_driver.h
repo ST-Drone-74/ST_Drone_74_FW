@@ -40,9 +40,9 @@ extern SPI_HandleTypeDef hspi2;
 #define MAG_OFFSET_Y_H			0x48
 #define MAG_OFFSET_Z_L			0x49
 #define MAG_OFFSET_Z_H			0x4A
-#define MAG_CTRL_REG_A          0x10
-#define MAG_CTRL_REG_B          0x11
-#define MAG_CTRL_REG_C          0x13
+#define MAG_CFG_REG_A           0x60
+#define MAG_CFG_REG_B           0x61
+#define MAG_CFG_REG_C           0x62
 #define MAG_INIT_CTRL			0x63
 #define MAG_INT_THS_L			0x65
 #define MAG_INT_THS_H			0x66
