@@ -19,7 +19,7 @@ uint8_t compass_Init_Device(void)
 		compass_Write_Single_Register(MAG_CFG_REG_A, &set_Cfg_Reg_A);
 		HAL_Delay(1000);
 		/*set config register A*/
-		set_Cfg_Reg_A = 0x80;
+		set_Cfg_Reg_A = 0x88; //0b1000 1000
 		compass_Write_Single_Register(MAG_CFG_REG_A, &set_Cfg_Reg_A);
 		HAL_Delay(1);
 		/*set config register B*/
@@ -48,14 +48,21 @@ uint8_t compass_Read_Device_Name(uint8_t *ptr)
     return val;
 }
 
-uint8_t compass_Read_X_Data(uint16_t *ptr)
+uint8_t compass_Read_Device_Status(void)
+{
+	uint8_t rxBuffer = 0x00;
+	compass_Read_Single_Register(MAG_STATUS, &rxBuffer);
+	return rxBuffer;
+}
+
+uint8_t compass_Read_X_Data(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTX_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
 	}
 	else
 	{
@@ -64,14 +71,14 @@ uint8_t compass_Read_X_Data(uint16_t *ptr)
 	return val;
 }
 
-uint8_t compass_Read_Y_Data(uint16_t *ptr)
+uint8_t compass_Read_Y_Data(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTY_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
 	}
 	else
 	{
@@ -80,14 +87,14 @@ uint8_t compass_Read_Y_Data(uint16_t *ptr)
 	return val;
 }
 
-uint8_t compass_Read_Z_Data(uint16_t *ptr)
+uint8_t compass_Read_Z_Data(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTZ_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
 	}
 	else
 	{
@@ -110,14 +117,14 @@ uint8_t compass_Read_Temp_Out_H(void)
 	return rxData;
 }
 
-uint8_t compass_Read_Temperature(uint16_t *ptr)
+uint8_t compass_Read_Temperature(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_TEMP_OUT_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
 		val = COMP_OK;
 	}
 	else
