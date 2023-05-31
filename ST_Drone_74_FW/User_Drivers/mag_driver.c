@@ -98,7 +98,9 @@ uint8_t compass_Read_Z_Data(uint16_t *ptr)
 
 uint8_t compass_Read_Temp_Out_L(void)
 {
-	return COMP_OK;
+	uint8_t rxData = 0x00;
+	compass_Read_Single_Register(MAG_TEMP_OUT_L, &rxData);
+	return rxData;
 }
 
 uint8_t compass_Read_Temp_Out_H(void)
