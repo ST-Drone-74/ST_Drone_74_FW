@@ -68,6 +68,7 @@ uint8_t compass_Read_Z_Data(int16_t *ptr);
 uint8_t compass_Read_Temp_Out_L(void);
 uint8_t compass_Read_Temp_Out_H(void);
 uint8_t compass_Read_Temperature(int16_t *ptr);
+uint8_t compass_Read_All_Offset(uint8_t *rxPtr);
 
 /*RW SINGLE REGISTER*/
 uint8_t compass_Write_Single_Register(uint8_t address, uint8_t *txData);
