@@ -19,7 +19,8 @@ extern SPI_HandleTypeDef hspi2;
 #ifdef MAGNETO_LIS2MDL
 
 #define MAG_DEVICE_NAME         0x40
-#define MAG_TEMP_SENSITIVE      (float)8.0
+#define MAG_TEMP_SENSITIVITY    (float)8.0 // LSB/*C
+#define MAG_DATA_SENSITIVITY    (float)1.5 // mgauss/LSB
 /*LIS2MDL REGISTER - READ ONLY*/
 #define MAG_WHO_I_AM			0x4F
 #define MAG_INT_SOURCE			0x64
@@ -58,14 +59,15 @@ typedef enum
 /*COMPASS CONTROL FUNCTION*/
 uint8_t compass_Init_Device(void);
 uint8_t compass_Read_Device_Name(uint8_t *ptr);
+uint8_t compass_Read_Device_Status(void);
 
 /*MAGNETIC AND TEMPERATURE DATA*/
-uint8_t compass_Read_X_Data(uint16_t *ptr);
-uint8_t compass_Read_Y_Data(uint16_t *ptr);
-uint8_t compass_Read_Z_Data(uint16_t *ptr);
+uint8_t compass_Read_X_Data(int16_t *ptr);
+uint8_t compass_Read_Y_Data(int16_t *ptr);
+uint8_t compass_Read_Z_Data(int16_t *ptr);
 uint8_t compass_Read_Temp_Out_L(void);
 uint8_t compass_Read_Temp_Out_H(void);
-uint8_t compass_Read_Temperature(uint16_t *ptr);
+uint8_t compass_Read_Temperature(int16_t *ptr);
 
 /*RW SINGLE REGISTER*/
 uint8_t compass_Write_Single_Register(uint8_t address, uint8_t *txData);
