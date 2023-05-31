@@ -164,14 +164,14 @@ uint8_t baro_HPA_Pressure(float *pressure)
 	return val;
 }
 
-uint8_t baro_Read_Temperature(uint16_t *rxData)
+uint8_t baro_Read_Temperature(int16_t *rxData)
 {
 	uint8_t val = SENSOR_OK;
 	uint8_t rx_Data[2] = {};
 	if(rxData != NULL)
 	{
 		barometer_SPI_Read(&hspi2, BARO_TEMP_OUT_L, rx_Data, sizeof(rx_Data)+1);
-		(*rxData) = ((uint16_t)rx_Data[1])<<8 | (uint16_t)rx_Data[0];
+		(*rxData) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
 	}
 	else
 	{

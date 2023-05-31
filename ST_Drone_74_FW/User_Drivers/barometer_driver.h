@@ -22,7 +22,7 @@ extern SPI_HandleTypeDef hspi2;
 #define BARO_I2C_ADDRESS_1          0x5D
 #define BARO_I2C_ADDRESS_2          0x5C
 #define BARO_DEVICE_NAME            0xB1
-#define BARO_SCALING_FACTOR         4096
+#define BARO_SCALING_FACTOR         (float)4096.0
 #define BARO_TEMP_SENSITIVE         (float)100.0
 /*LPS22HD REGISTER - READ ONLY*/
 #define BARO_WHO_I_AM               0x0F
@@ -91,7 +91,7 @@ uint8_t baro_Set_FIFO_Mode(Fifo_Mode_e set_Mode, uint8_t set_level);
 void baro_Reset_FIFO(void);
 uint8_t baro_Read_Pressure(uint32_t *rxData);
 uint8_t baro_HPA_Pressure(float *pressure);
-uint8_t baro_Read_Temperature(uint16_t *rxData);
+uint8_t baro_Read_Temperature(int16_t *rxData);
 Fifo_Mode_e baro_Read_Current_FIFO_Mode(void);
 #endif/*BAROMETER_LPS22HD*/
 
