@@ -63,6 +63,7 @@ uint8_t compass_Read_X_Data(int16_t *ptr)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTX_L, rx_Data, sizeof(rx_Data)+1);
 		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) *= MAG_DATA_SENSITIVITY;
 	}
 	else
 	{
@@ -79,6 +80,7 @@ uint8_t compass_Read_Y_Data(int16_t *ptr)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTY_L, rx_Data, sizeof(rx_Data)+1);
 		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) *= MAG_DATA_SENSITIVITY;
 	}
 	else
 	{
@@ -95,6 +97,7 @@ uint8_t compass_Read_Z_Data(int16_t *ptr)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTZ_L, rx_Data, sizeof(rx_Data)+1);
 		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) *= MAG_DATA_SENSITIVITY;
 	}
 	else
 	{
@@ -125,6 +128,22 @@ uint8_t compass_Read_Temperature(int16_t *ptr)
 	{
 		compass_SPI_Read(&hspi2, MAG_TEMP_OUT_L, rx_Data, sizeof(rx_Data)+1);
 		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) = (*ptr)/MAG_TEMP_SENSITIVITY;
+		val = COMP_OK;
+	}
+	else
+	{
+		val = COMP_ERROR;
+	}
+	return val;
+}
+
+uint8_t compass_Read_All_Offset(uint8_t *rxPtr)
+{
+	uint8_t val = COMP_OK;
+	if(rxPtr != NULL)
+	{
+		compass_SPI_Read(&hspi2, MAG_OFFSET_X_L, rxPtr, 7);
 		val = COMP_OK;
 	}
 	else
