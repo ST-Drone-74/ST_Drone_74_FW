@@ -6,6 +6,11 @@
  */
 #include <barometer_driver.h>
 
+/**
+ * @brief Initalize baro sensor, clear memory and reboot,
+ * setup for 2 wire SPI and bypass FIFO
+ * @return  0
+ */
 uint8_t baro_Init_Device(void)
 {
     uint8_t ctrl_reg_1 = 0x31;
@@ -43,6 +48,13 @@ uint8_t baro_Init_Device(void)
     return 0;
 }
 
+/**
+ * @brief set FIFO mode
+ * 
+ * @param set_Mode FIFO operation mode will be set
+ * @param set_level choose the level of data register, MAX 32 lv
+ * @return SENSOR_OK 
+ */
 uint8_t baro_Set_FIFO_Mode(Fifo_Mode_e set_Mode, uint8_t set_level)
 {
 	uint8_t reg_val = 0x00;
@@ -99,17 +111,30 @@ uint8_t baro_Set_FIFO_Mode(Fifo_Mode_e set_Mode, uint8_t set_level)
 	return SENSOR_OK;
 }
 
+/**
+ * @brief reset FIFO buffer's memory by toggling the BYPASS mode
+ * 
+ */
 void baro_Reset_FIFO(void)
 {
 	uint8_t reg_val = 0x00;
+	uint8_t current_mode = 0x00;
 	/*read back FIFO control register*/
-	barometer_SPI_Read(&hspi2, BARO_FIFO_CTRL, &reg_val, 1);
+	barometer_SPI_Read(&hspi2, BARO_FIFO_CTRL, &current_mode, 1);
 	/*reset 3 BIT FIFO mode into 000*/
-	reg_val &= 0x1F;
+	reg_val = current_mode & 0x1F;
 	/*reset FIFO mode by set to BYPASS*/
 	barometer_SPI_Write(&hspi2, BARO_FIFO_CTRL, &reg_val, 1);
+	/*set previous FIFO mode*/
+	barometer_SPI_Write(&hspi2, BARO_FIFO_CTRL, &current_mode, 1);
 }
 
+/**
+ * @brief read raw pressure data from PRESS_OUT registers
+ * read method is based on the current FIFO mode
+ * @param rxData used to store u32 pressure data
+ * @return sequence result 
+ */
 uint8_t baro_Read_Pressure(uint32_t *rxData)
 {
 	uint8_t val = SENSOR_OK;
@@ -149,6 +174,12 @@ uint8_t baro_Read_Pressure(uint32_t *rxData)
 	return val;
 }
 
+/**
+ * @brief convert u32 raw opressure data into hPa unit
+ * 
+ * @param pressure used to store hPa pressure value
+ * @return sequence result 
+ */
 uint8_t baro_HPA_Pressure(float *pressure)
 {
 	uint8_t val = SENSOR_OK;
@@ -165,6 +196,12 @@ uint8_t baro_HPA_Pressure(float *pressure)
 	return val;
 }
 
+/**
+ * @brief read raw temperarture data from TEMP_OUT registers
+ * 
+ * @param rxData used to store u16 raw data
+ * @return sequence result 
+ */
 uint8_t baro_Read_Temperature(int16_t *rxData)
 {
 	uint8_t val = SENSOR_OK;
@@ -181,6 +218,11 @@ uint8_t baro_Read_Temperature(int16_t *rxData)
 	return val;
 }
 
+/**
+ * @brief read current operation FIFO mode
+ * 
+ * @return enum of current mode 
+ */
 Fifo_Mode_e baro_Read_Current_FIFO_Mode(void)
 {
 	uint8_t fifo_Ctrl_Reg = 0x00;
@@ -224,6 +266,12 @@ Fifo_Mode_e baro_Read_Current_FIFO_Mode(void)
 	return fifo_Mode;
 }
 
+/**
+ * @brief read  then compare with default device name 
+ * 
+ * @param ptr point to variable which will store device name
+ * @return device name matching or not 
+ */
 uint8_t baro_Read_Device_Name(uint8_t *ptr)
 {
     uint8_t val = 0;
@@ -246,69 +294,132 @@ uint8_t baro_Read_Device_Name(uint8_t *ptr)
 	}
     return val;
 }
+
+/**
+ * @brief read init source register
+ * 
+ * @return init source register value 
+ */
 uint8_t baro_read_Init_Source(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_INT_SOURCE, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read FIFO status register
+ * 
+ * @return FIFO status register value
+ */
 uint8_t baro_read_FIFO_Status(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_FIFO_STATUS, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read sensor status register
+ * 
+ * @return sensor status register value
+ */
 uint8_t baro_read_Baro_Status(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_STATUS, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read PRESS_OUT_XL register
+ * 
+ * @return value of the register 
+ */
 uint8_t baro_read_Baro_Press_Out_XL(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_XL, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read PRESS_OUT_L register
+ * 
+ * @return value of the register 
+ */
 uint8_t baro_read_Baro_Press_Out_L(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_L, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read PRESS_OUT_H register
+ * 
+ * @return value of the register 
+ */
 uint8_t baro_read_Baro_Press_Out_H(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_PRESS_OUT_H, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read TEMP_OUT_L register
+ * 
+ * @return value of register
+ */
 uint8_t baro_read_Baro_Temp_Out_L(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_TEMP_OUT_L, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read TEMP_OUT_H register
+ * 
+ * @return value of register
+ */
 uint8_t baro_read_Baro_Temp_Out_H(void)
 {
 	uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_TEMP_OUT_H, &reg_return, 1);
 	return reg_return;
 }
+
+/**
+ * @brief read this register to reset Low-pass filter
+ * 
+ * @return uint8_t 
+ */
 uint8_t baro_read_Baro_LPFP_RES(void)
 {
     uint8_t reg_return = 0x00;
 	barometer_SPI_Read(&hspi2, BARO_LPFP_RES, &reg_return, 1);
 	return reg_return;
 }
+
 /*PRIVATE FUCNTION*/
+/**
+ * @brief enable sensor
+ */
 void _baroChipEnable(void)
 {
     HAL_GPIO_WritePin(LPS22H_CS_Port, LPS22H_CS_Pin, GPIO_PIN_RESET);
 }
+
+/**
+ * @brief disable sensor
+ */
 void _baroChipDisable(void)
 {
 	HAL_GPIO_WritePin(LPS22H_CS_Port, LPS22H_CS_Pin, GPIO_PIN_SET);
 }
+
 void barometer_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size )
 {
     /*chip select*/
@@ -334,6 +445,7 @@ void barometer_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t
 	SPI_1LINE_TX(xSpiHandle);
 	__HAL_SPI_ENABLE(xSpiHandle);
 }
+
 void barometer_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t *pBuffer, uint8_t size )
 {
     /*chip select*/
@@ -349,6 +461,13 @@ void barometer_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8
     _baroChipDisable();
 }
 
+/**
+ * @brief write to single register
+ * 
+ * @param address register's address will be access
+ * @param txData written value
+ * @return sequence result 
+ */
 uint8_t baro_write_Single_Register(uint8_t address, uint8_t *txData)
 {
 	Baro_State_e val = SENSOR_OK;
@@ -363,6 +482,14 @@ uint8_t baro_write_Single_Register(uint8_t address, uint8_t *txData)
 	}
 	return val;
 }
+
+/**
+ * @brief read from single register
+ * 
+ * @param address register's address will be access
+ * @param rxData store value
+ * @return sequence result 
+ */
 uint8_t baro_read_Single_Register(uint8_t address, uint8_t *rxData)
 {
 	Baro_State_e val = SENSOR_OK;
