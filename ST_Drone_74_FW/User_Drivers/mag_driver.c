@@ -6,6 +6,11 @@
  */
 #include <mag_driver.h>
 
+/**
+ * @brief initalize the compass, implement soft-reset then reboot the memory
+ * config register A, B and C to enable temperature compensation, ODR
+ * @return sequence state 
+ */
 uint8_t compass_Init_Device(void)
 {
 	uint8_t device_name = 0x00;
@@ -32,6 +37,11 @@ uint8_t compass_Init_Device(void)
 	return COMP_OK;
 }
 
+/**
+ * @brief read default device name
+ * @param ptr store device name value
+ * @return device name matching 
+ */
 uint8_t compass_Read_Device_Name(uint8_t *ptr)
 {
     uint8_t val = 0;
@@ -48,6 +58,10 @@ uint8_t compass_Read_Device_Name(uint8_t *ptr)
     return val;
 }
 
+/**
+ * @brief read device status
+ * @return register's value 
+ */
 uint8_t compass_Read_Device_Status(void)
 {
 	uint8_t rxBuffer = 0x00;
@@ -55,6 +69,11 @@ uint8_t compass_Read_Device_Status(void)
 	return rxBuffer;
 }
 
+/**
+ * @brief read X magnetic data
+ * @param ptr store register raw value
+ * @return sequence state 
+ */
 uint8_t compass_Read_X_Data(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
@@ -72,6 +91,11 @@ uint8_t compass_Read_X_Data(int16_t *ptr)
 	return val;
 }
 
+/**
+ * @brief read Y magnetic data
+ * @param ptr store register raw value
+ * @return sequence state 
+ */
 uint8_t compass_Read_Y_Data(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
@@ -89,6 +113,11 @@ uint8_t compass_Read_Y_Data(int16_t *ptr)
 	return val;
 }
 
+/**
+ * @brief read Z magnetic data
+ * @param ptr store register raw value
+ * @return sequence state 
+ */
 uint8_t compass_Read_Z_Data(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
@@ -106,6 +135,10 @@ uint8_t compass_Read_Z_Data(int16_t *ptr)
 	return val;
 }
 
+/**
+ * @brief temperature raw value from lower byte
+ * @return raw data 
+ */
 uint8_t compass_Read_Temp_Out_L(void)
 {
 	uint8_t rxData = 0x00;
@@ -113,6 +146,10 @@ uint8_t compass_Read_Temp_Out_L(void)
 	return rxData;
 }
 
+/**
+ * @brief temperature raw value from upper byte
+ * @return raw data 
+ */
 uint8_t compass_Read_Temp_Out_H(void)
 {
 	uint8_t rxData = 0x00;
@@ -120,6 +157,11 @@ uint8_t compass_Read_Temp_Out_H(void)
 	return rxData;
 }
 
+/**
+ * @brief read and combine raw temperature data
+ * @param ptr store temperature value
+ * @return sequence state 
+ */
 uint8_t compass_Read_Temperature(int16_t *ptr)
 {
 	uint8_t val = COMP_OK;
@@ -138,6 +180,11 @@ uint8_t compass_Read_Temperature(int16_t *ptr)
 	return val;
 }
 
+/**
+ * @brief read offset registers
+ * @param rxPtr store read value
+ * @return sequence state  
+ */
 uint8_t compass_Read_All_Offset(uint8_t *rxPtr)
 {
 	uint8_t val = COMP_OK;
@@ -153,6 +200,12 @@ uint8_t compass_Read_All_Offset(uint8_t *rxPtr)
 	return val;
 }
 
+/**
+ * @brief write to single register
+ * @param address accessed register's address
+ * @param txData data will be written
+ * @return sequence state  
+ */
 uint8_t compass_Write_Single_Register(uint8_t address, uint8_t *txData)
 {
 	Compass_State_e val = COMP_OK;
@@ -168,6 +221,12 @@ uint8_t compass_Write_Single_Register(uint8_t address, uint8_t *txData)
 	return val;
 }
 
+/**
+ * @brief read from single register
+ * @param address accessed register's address
+ * @param rxData data read from register
+ * @return sequence state 
+ */
 uint8_t compass_Read_Single_Register(uint8_t address, uint8_t *rxData)
 {
 	Compass_State_e val = COMP_OK;
@@ -183,6 +242,13 @@ uint8_t compass_Read_Single_Register(uint8_t address, uint8_t *rxData)
 	return val;
 }
 
+/**
+ * @brief SPI read function
+ * @param xSpiHandle point to SPI configuration
+ * @param ReadAddr register will be accessed
+ * @param pBuffer store read data
+ * @param size how many bytes will be read
+ */
 void compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size )
 {
 	/*chip select*/
@@ -209,6 +275,13 @@ void compass_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *
 	__HAL_SPI_ENABLE(xSpiHandle);
 }
 
+/**
+ * @brief SPI write fucntion
+ * @param xSpiHandle point to SPI configuration
+ * @param WriteAddr register will be accessed
+ * @param pBuffer data which will be written to register
+ * @param size size of written data
+ */
 void compass_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t *pBuffer, uint8_t size )
 {
 	/*chip select*/
@@ -224,11 +297,17 @@ void compass_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t
 	compassDisable();
 }
 
+/**
+ * @brief enable device's SPI
+ */
 void compassEnable(void)
 {
 	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_RESET);
 }
 
+/**
+ * @brief disable device's SPI
+ */
 void compassDisable(void)
 {
 	HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_SET);
