@@ -65,7 +65,7 @@ void set_Motor_PWM(motor_st *motor_pwm)
 void set_All_Motor_Stop(void)
 {
 	htim4.Instance->CCR1 = htim4.Instance->CCR2 =
-	htim4.Instance->CCR3 = htim4.Instance->CCR4 = MOTOR_MAX_PWM_VALUE;
+	htim4.Instance->CCR3 = htim4.Instance->CCR4 = MOTOR_MIN_PWM_VALUE;
 }
 
 void set_All_Motor_Run(void)
