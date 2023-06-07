@@ -348,9 +348,17 @@ void MX_TIM4_Init(void)
   TIM_OC_InitTypeDef sConfigOC;
 
   htim4.Instance = TIM4;
-  htim4.Init.Prescaler = 83;
+#ifdef DC_MOTOR
+  htim4.Init.Prescaler = 84;                                    /* DC motor configuration - Freq 494Hz*/
   htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
   htim4.Init.Period = 1999;
+#endif/*DC_MOTOR*/
+#ifdef BRSHLESS_MOTOR
+  htim4.Init.Prescaler = 100;                                    /* ESC motor configuration - Freq 400Hz*/
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 2075;
+#endif/*BRSHLESS_MOTOR*/
+
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   HAL_TIM_Base_Init(&htim4);
 
