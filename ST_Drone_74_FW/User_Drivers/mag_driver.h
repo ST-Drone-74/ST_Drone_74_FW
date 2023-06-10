@@ -62,12 +62,12 @@ uint8_t compass_Read_Device_Name(uint8_t *ptr);
 uint8_t compass_Read_Device_Status(void);
 
 /*MAGNETIC AND TEMPERATURE DATA*/
-uint8_t compass_Read_X_Data(int16_t *ptr);
-uint8_t compass_Read_Y_Data(int16_t *ptr);
-uint8_t compass_Read_Z_Data(int16_t *ptr);
+uint8_t compass_Read_X_Data(float *ptr);
+uint8_t compass_Read_Y_Data(float *ptr);
+uint8_t compass_Read_Z_Data(float *ptr);
 uint8_t compass_Read_Temp_Out_L(void);
 uint8_t compass_Read_Temp_Out_H(void);
-uint8_t compass_Read_Temperature(int16_t *ptr);
+uint8_t compass_Read_Temperature(float *ptr);
 uint8_t compass_Read_All_Offset(uint8_t *rxPtr);
 
 /*RW SINGLE REGISTER*/
