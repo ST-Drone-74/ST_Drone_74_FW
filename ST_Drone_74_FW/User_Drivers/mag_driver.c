@@ -17,6 +17,7 @@ uint8_t compass_Init_Device(void)
 	uint8_t set_Cfg_Reg_A = 0x00;
 	uint8_t set_Cfg_Reg_B = 0x00;
 	uint8_t set_Cfg_Reg_C = 0x00;
+	uint8_t offset_Value[6] = {0x00};
 	while((compass_Read_Device_Name(&device_name) != 1))
 	{
 		/*soft reset and memory reboot*/
@@ -28,11 +29,19 @@ uint8_t compass_Init_Device(void)
 		compass_Write_Single_Register(MAG_CFG_REG_A, &set_Cfg_Reg_A);
 		HAL_Delay(1);
 		/*set config register B*/
+		set_Cfg_Reg_B = 0x03; //0b0000 0011
 		compass_Write_Single_Register(MAG_CFG_REG_B, &set_Cfg_Reg_B);
 		HAL_Delay(1);
 		/*set config register C*/
+		set_Cfg_Reg_C = 0x10;//0b0001 0000
 		compass_Write_Single_Register(MAG_CFG_REG_C, &set_Cfg_Reg_C);
 		HAL_Delay(1);
+		/*write sensor offset*/
+		for(uint8_t i = 0; i<6; i++)
+		{
+			compass_Write_Single_Register(MAG_OFFSET_X_L + i, &offset_Value[i]);
+		}
+		/*Offset register*/
 	}
 	return COMP_OK;
 }
@@ -74,15 +83,16 @@ uint8_t compass_Read_Device_Status(void)
  * @param ptr store register raw value
  * @return sequence state 
  */
-uint8_t compass_Read_X_Data(int16_t *ptr)
+uint8_t compass_Read_X_Data(float *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
+	int16_t rawData = 0x00;
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTX_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
-		(*ptr) *= MAG_DATA_SENSITIVITY;
+		rawData = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) = (float)((float)(rawData)*MAG_DATA_SENSITIVITY);
 	}
 	else
 	{
@@ -96,15 +106,16 @@ uint8_t compass_Read_X_Data(int16_t *ptr)
  * @param ptr store register raw value
  * @return sequence state 
  */
-uint8_t compass_Read_Y_Data(int16_t *ptr)
+uint8_t compass_Read_Y_Data(float *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
+	int16_t rawData = 0x00;
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTY_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
-		(*ptr) *= MAG_DATA_SENSITIVITY;
+		rawData = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) = (float)((float)(rawData)*MAG_DATA_SENSITIVITY);
 	}
 	else
 	{
@@ -118,15 +129,16 @@ uint8_t compass_Read_Y_Data(int16_t *ptr)
  * @param ptr store register raw value
  * @return sequence state 
  */
-uint8_t compass_Read_Z_Data(int16_t *ptr)
+uint8_t compass_Read_Z_Data(float *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
+	int16_t rawData = 0x00;
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_OUTZ_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
-		(*ptr) *= MAG_DATA_SENSITIVITY;
+		rawData = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) = (float)((float)(rawData)*MAG_DATA_SENSITIVITY);
 	}
 	else
 	{
@@ -162,15 +174,16 @@ uint8_t compass_Read_Temp_Out_H(void)
  * @param ptr store temperature value
  * @return sequence state 
  */
-uint8_t compass_Read_Temperature(int16_t *ptr)
+uint8_t compass_Read_Temperature(float *ptr)
 {
 	uint8_t val = COMP_OK;
 	uint8_t rx_Data[2] = {};
+	int16_t rawData = 0x00;
 	if(ptr != NULL)
 	{
 		compass_SPI_Read(&hspi2, MAG_TEMP_OUT_L, rx_Data, sizeof(rx_Data)+1);
-		(*ptr) = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
-		(*ptr) = (*ptr)/MAG_TEMP_SENSITIVITY;
+		rawData = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		(*ptr) = (float)((float)(rawData)/MAG_TEMP_SENSITIVITY);
 		val = COMP_OK;
 	}
 	else
