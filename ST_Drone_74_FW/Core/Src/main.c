@@ -56,7 +56,7 @@ TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim9;
 
 UART_HandleTypeDef huart1;
-
+volatile uint32_t HCI_ProcessEvent=0;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
