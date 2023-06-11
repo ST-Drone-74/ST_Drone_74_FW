@@ -53,6 +53,8 @@
 									<listOptionValue builtIn="false" value="../Drivers/CMSIS/Include"/>
 									<listOptionValue builtIn="false" value="&quot;D:\ST_Drone_74_FW\ST_Drone_74_FW\Application&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;D:\ST_Drone_74_FW\ST_Drone_74_FW\User_Drivers&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\ST_Drone_74_FW\ST_Drone_74_FW\Middlewares\ST\STM32_BlueNRG\SimpleBlueNRG_HCI\includes&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;D:\ST_Drone_74_FW\ST_Drone_74_FW\Middlewares\ST\STM32_BlueNRG\Interface&quot;"/>
 								</option>
 								<inputType id="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c.2000767234" superClass="com.st.stm32cube.ide.mcu.gnu.managedbuild.tool.c.compiler.input.c"/>
 							</tool>
