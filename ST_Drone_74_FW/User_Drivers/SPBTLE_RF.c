@@ -18,6 +18,7 @@ extern volatile uint32_t ms_counter;
 #define TIMEOUT_DURATION 15
 
 SPI_HandleTypeDef SpiHandle;
+GPIO_InitTypeDef GPIO_InitStruct;
 uint32_t HCI_ProcessEvent=1;
 /* Private function prototypes -----------------------------------------------*/
 static void us150Delay(void);
@@ -110,8 +111,31 @@ void BNRG_SPI_Init(void)
   SpiHandle.Init.BaudRatePrescaler = BNRG_SPI_BAUDRATEPRESCALER;
   SpiHandle.Init.CRCCalculation = BNRG_SPI_CRCCALCULATION;
   
+  /* Reset pin */
+  GPIO_InitStruct.Pin = BNRG_SPI_RESET_PIN;
+  GPIO_InitStruct.Mode = BNRG_SPI_RESET_MODE;
+  GPIO_InitStruct.Pull = BNRG_SPI_RESET_PULL;
+  GPIO_InitStruct.Speed = BNRG_SPI_RESET_SPEED;
+  GPIO_InitStruct.Alternate = BNRG_SPI_RESET_ALTERNATE;
+  HAL_GPIO_Init(BNRG_SPI_RESET_PORT, &GPIO_InitStruct);
+  HAL_GPIO_WritePin(BNRG_SPI_RESET_PORT, BNRG_SPI_RESET_PIN, GPIO_PIN_RESET);
+
+  /* SCLK */
+  GPIO_InitStruct.Pin = BNRG_SPI_SCLK_PIN;
+  GPIO_InitStruct.Mode = BNRG_SPI_SCLK_MODE;
+  GPIO_InitStruct.Pull = BNRG_SPI_SCLK_PULL;
+  GPIO_InitStruct.Speed = BNRG_SPI_SCLK_SPEED;
+  GPIO_InitStruct.Alternate = BNRG_SPI_SCLK_ALTERNATE;
+  HAL_GPIO_Init(BNRG_SPI_SCLK_PORT, &GPIO_InitStruct);
+
   HAL_SPI_Init(&SpiHandle);
   __HAL_SPI_ENABLE(&SpiHandle);
+  __SPI1_CLK_ENABLE();
+  BNRG_SPI_RESET_CLK_ENABLE();
+  BNRG_SPI_SCLK_CLK_ENABLE();
+  /* Configure the NVIC for SPI */
+  HAL_NVIC_SetPriority(BNRG_SPI_EXTI_IRQn, 3, 0);
+  HAL_NVIC_EnableIRQ(BNRG_SPI_EXTI_IRQn);
 }
 
 /**
