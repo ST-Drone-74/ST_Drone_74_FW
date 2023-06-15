@@ -136,6 +136,7 @@ void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_bytes1,
 void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void BlueNRG_Init(void);
+void Init_BlueNRG_Custom_Services(void);
 
 #ifdef __cplusplus
 }
