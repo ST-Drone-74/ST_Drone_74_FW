@@ -18,7 +18,7 @@ extern volatile uint32_t ms_counter;
 #define TIMEOUT_DURATION 15
 
 SPI_HandleTypeDef SpiHandle;
-
+uint32_t HCI_ProcessEvent=1;
 /* Private function prototypes -----------------------------------------------*/
 static void us150Delay(void);
 void set_irq_as_output(void);
@@ -111,6 +111,7 @@ void BNRG_SPI_Init(void)
   SpiHandle.Init.CRCCalculation = BNRG_SPI_CRCCALCULATION;
   
   HAL_SPI_Init(&SpiHandle);
+  __HAL_SPI_ENABLE(&SpiHandle);
 }
 
 /**
@@ -528,3 +529,28 @@ fail:
   return;
 }
 
+void Init_BlueNRG_Custom_Services(void)
+{
+	  int ret;
+
+	  ret = Add_HWServW2ST_Service();
+	  if(ret == BLE_STATUS_SUCCESS) {
+	     PRINTF("HW      Service W2ST added successfully\r\n");
+	  } else {
+	     PRINTF("\r\nError while adding HW Service W2ST\r\n");
+	  }
+
+	  ret = Add_ConsoleW2ST_Service();
+	  if(ret == BLE_STATUS_SUCCESS) {
+	     PRINTF("Console Service W2ST added successfully\r\n");
+	  } else {
+	     PRINTF("\r\nError while adding Console Service W2ST\r\n");
+	  }
+
+	  ret = Add_ConfigW2ST_Service();
+	  if(ret == BLE_STATUS_SUCCESS) {
+	     PRINTF("Config  Service W2ST added successfully\r\n");
+	  } else {
+	     PRINTF("\r\nError while adding Config Service W2ST\r\n");
+	  }
+}
