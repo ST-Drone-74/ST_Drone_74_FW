@@ -43,6 +43,8 @@
 #include <pid_control.h>
 #include <remote_control.h>
 #include <sensor_management.h>
+#include "sensor_service.h"
+#include "SPBTLE_RF.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -56,7 +58,8 @@ TIM_HandleTypeDef htim4;
 TIM_HandleTypeDef htim9;
 
 UART_HandleTypeDef huart1;
-volatile uint32_t HCI_ProcessEvent=0;
+extern uint32_t HCI_ProcessEvent;
+extern uint8_t set_connectable;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -101,7 +104,7 @@ int main(void)
   MX_GPIO_Init();
   SystemClock_Config();
   MX_ADC1_Init();
-  MX_SPI1_Init();
+//  MX_SPI1_Init();
   MX_SPI2_Init();
   MX_TIM2_Init();
   MX_TIM4_Init();
@@ -117,6 +120,10 @@ int main(void)
 
   /*Motor init*/
   set_All_Motor_Stop();
+  /*Ble init*/
+  BlueNRG_Init();
+  /* Initialize the BlueNRG Custom services */
+  Init_BlueNRG_Custom_Services();
   /* USER CODE BEGIN 2 */
  
   /* USER CODE END 2 */
@@ -125,7 +132,19 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-
+	  if(HCI_ProcessEvent)
+	  {
+		  HCI_ProcessEvent=0;
+	      HCI_Process();
+	  }
+	  HAL_Delay(100);
+	  /* Now update the BLE advertize data and make the Board connectable */
+	  if(set_connectable)
+	  {
+		  setConnectable();
+		  set_connectable = FALSE;
+	  }
+	  HAL_Delay(100);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
