@@ -69,79 +69,28 @@
 
 #include <stdlib.h>
 //#include "main.h"
-   
+//
 //#include "sensor.h"
-#define MAX_TEMP_SENSORS 2
-/* BlueNRG Board Type */
-#define IDB04A1 0
-#define IDB05A1 1
-/* Package Version only numbers 0->9 */
-#define DRN_VERSION_MAJOR '1'
-#define DRN_VERSION_MINOR '1'
-#define DRN_VERSION_PATCH '0'
-/* Define the MOTENV1 Name MUST be 7 char long */
-#define NAME_DRN 'D','R','N','1',DRN_VERSION_MAJOR,DRN_VERSION_MINOR,DRN_VERSION_PATCH
-/* Package Name */
-#define DRN_PACKAGENAME "DRN1"
-/* STM32 MCU_ID */
-#define STM32_MCU_ID ((uint32_t *)0xE0042000)
-
-typedef enum
-{
-	TARGET_NUCLEO,
-	TARGET_SENSORTILE,
-	TARGETS_NUMBER
-} TargetType_t;
-
- typedef struct
- {
-   TargetType_t BoardType;
-   int32_t NumTempSensors;
-   void *HandleTempSensors[MAX_TEMP_SENSORS];
-
-   void *HandlePressSensor;
-   void *HandleHumSensor;
-
-   int32_t HWAdvanceFeatures;
-   void *HandleAccSensor;
-   void *HandleGyroSensor;
-   void *HandleMagSensor;
-
-   uint8_t LedStatus;
-   uint8_t bnrg_expansion_board;
-   uint8_t SnsAltFunc;
-
- #ifdef STM32_SENSORTILE
-   void *HandleGGComponent;
- #endif /* STM32_SENSORTILE */
-
- } TargetFeatures_t;
-
- typedef struct
- {
-   int32_t AXIS_X;
-   int32_t AXIS_Y;
-   int32_t AXIS_Z;
- } SensorAxes_t;
 
 /* Exported functions ------------------------------------------------------- */
-tBleStatus Add_HWServW2ST_Service(void);
-tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag);
-tBleStatus AccEvent_Notify(uint16_t Command);
+extern tBleStatus Add_HWServW2ST_Service(void);
+//extern tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag);
+extern tBleStatus AccEvent_Notify(uint16_t Command);
 
-tBleStatus ARMING_Update(uint8_t ArmingStatus);
-tBleStatus Batt_Env_RSSI_Update(int32_t Press,uint16_t Batt,int16_t Temp,int16_t RSSI);
+extern tBleStatus ARMING_Update(uint8_t ArmingStatus);
+extern tBleStatus Batt_Env_RSSI_Update(int32_t Press,uint16_t Batt,int16_t Temp,int16_t RSSI);
 
-tBleStatus Add_ConsoleW2ST_Service(void);
-tBleStatus Stderr_Update(uint8_t *data,uint8_t length);
-tBleStatus Term_Update(uint8_t *data,uint8_t length);
+extern tBleStatus Add_ConsoleW2ST_Service(void);
+extern tBleStatus Stderr_Update(uint8_t *data,uint8_t length);
+extern tBleStatus Term_Update(uint8_t *data,uint8_t length);
 
-tBleStatus Add_ConfigW2ST_Service(void);
-tBleStatus Config_Notify(uint32_t Feature,uint8_t Command,uint8_t val);
-tBleStatus Term_Update_AfterRead(void);
-void       setConnectable(void);
-void       HCI_Event_CB(void *pckt);
+extern tBleStatus Add_ConfigW2ST_Service(void);
+extern tBleStatus Config_Notify(uint32_t Feature,uint8_t Command,uint8_t val);
 
+extern void       setConnectable(void);
+extern void       HCI_Event_CB(void *pckt);
+extern uint8_t BufferToWrite[256];
+extern int32_t BytesToWrite;
 /* Exported constants --------------------------------------------------------*/
 
 /* For enabling the capability to handle BlueNRG Congestion */

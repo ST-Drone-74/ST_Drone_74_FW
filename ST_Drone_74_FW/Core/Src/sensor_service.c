@@ -41,7 +41,7 @@
   ******************************************************************************
   */
 #include <stdio.h>
-//#include "TargetFeatures.h"
+#include "TargetFeatures.h"
 //#include "main.h"
 #include "sensor_service.h"
 //#include "console.h"
@@ -53,13 +53,12 @@
 /* Exported variables ---------------------------------------------------------*/
 int connected = FALSE;
 uint8_t set_connectable = TRUE;
-int32_t BytesToWrite;
-uint8_t BufferToWrite[256];
-/* Imported Variables -------------------------------------------------------------*/
-uint32_t ConnectionBleStatus;
 
-uint8_t bdaddr[6];
-uint8_t joydata[];
+/* Imported Variables -------------------------------------------------------------*/
+extern uint32_t ConnectionBleStatus;
+
+extern uint8_t bdaddr[6];
+extern uint8_t joydata[];
 
 
 /* Private variables ------------------------------------------------------------*/
@@ -309,7 +308,7 @@ static tBleStatus Stderr_Update_AfterRead(void)
  * @param None
  * @retval tBleStatus      Status
  */
-tBleStatus Term_Update_AfterRead(void)
+static tBleStatus Term_Update_AfterRead(void)
 {
   tBleStatus ret;
 
@@ -530,43 +529,43 @@ fail:
  * @param  SensorAxes_t Mag Structure containing magneto value
  * @retval tBleStatus      Status
  */
-tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag)
-{  
-  tBleStatus ret;
-
-  uint8_t buff[2+3*3*2];
-
-  STORE_LE_16(buff   ,(HAL_GetTick()>>3));
-  
-  STORE_LE_16(buff+2 ,Acc->AXIS_X);
-  STORE_LE_16(buff+4 ,Acc->AXIS_Y);
-  STORE_LE_16(buff+6 ,Acc->AXIS_Z);
-  
-  Gyro->AXIS_X/=100;
-  Gyro->AXIS_Y/=100;
-  Gyro->AXIS_Z/=100;
-
-  STORE_LE_16(buff+8 ,Gyro->AXIS_X);
-  STORE_LE_16(buff+10,Gyro->AXIS_Y);
-  STORE_LE_16(buff+12,Gyro->AXIS_Z);
-
-  STORE_LE_16(buff+14,Mag->AXIS_X);
-  STORE_LE_16(buff+16,Mag->AXIS_Y);
-  STORE_LE_16(buff+18,Mag->AXIS_Z);
-  
-  ret = ACI_GATT_UPDATE_CHAR_VALUE(HWServW2STHandle, AccGyroMagCharHandle, 0, 2+3*3*2, buff);
-	
-  if (ret != BLE_STATUS_SUCCESS){
-    if(W2ST_CHECK_CONNECTION(W2ST_CONNECT_STD_ERR)){
-      BytesToWrite =sprintf((char *)BufferToWrite, "Error Updating Acc/Gyro/Mag Char\r\n");
-      Stderr_Update(BufferToWrite,BytesToWrite);
-    } else {
-      PRINTF("Error Updating Acc/Gyro/Mag Char\r\n");
-    }
-    return BLE_STATUS_ERROR;
-  }
-  return BLE_STATUS_SUCCESS;	
-}
+//tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag)
+//{
+//  tBleStatus ret;
+//
+//  uint8_t buff[2+3*3*2];
+//
+//  STORE_LE_16(buff   ,(HAL_GetTick()>>3));
+//
+//  STORE_LE_16(buff+2 ,Acc->AXIS_X);
+//  STORE_LE_16(buff+4 ,Acc->AXIS_Y);
+//  STORE_LE_16(buff+6 ,Acc->AXIS_Z);
+//
+//  Gyro->AXIS_X/=100;
+//  Gyro->AXIS_Y/=100;
+//  Gyro->AXIS_Z/=100;
+//
+//  STORE_LE_16(buff+8 ,Gyro->AXIS_X);
+//  STORE_LE_16(buff+10,Gyro->AXIS_Y);
+//  STORE_LE_16(buff+12,Gyro->AXIS_Z);
+//
+//  STORE_LE_16(buff+14,Mag->AXIS_X);
+//  STORE_LE_16(buff+16,Mag->AXIS_Y);
+//  STORE_LE_16(buff+18,Mag->AXIS_Z);
+//
+//  ret = ACI_GATT_UPDATE_CHAR_VALUE(HWServW2STHandle, AccGyroMagCharHandle, 0, 2+3*3*2, buff);
+//
+//  if (ret != BLE_STATUS_SUCCESS){
+//    if(W2ST_CHECK_CONNECTION(W2ST_CONNECT_STD_ERR)){
+//      BytesToWrite =sprintf((char *)BufferToWrite, "Error Updating Acc/Gyro/Mag Char\r\n");
+//      Stderr_Update(BufferToWrite,BytesToWrite);
+//    } else {
+//      PRINTF("Error Updating Acc/Gyro/Mag Char\r\n");
+//    }
+//    return BLE_STATUS_ERROR;
+//  }
+//  return BLE_STATUS_SUCCESS;
+//}
 
 /**
  * @brief  Update Battery, Environmental and RSSI characteristic value
@@ -763,23 +762,21 @@ static void GAP_DisconnectionComplete_CB(void)
  */
 void Read_Request_CB(uint16_t handle)
 {
-//  uint8_t Status;
+  uint8_t Status;  
   if(handle == EnvironmentalCharHandle + 1){
     /* Read Request for Pressure,Battery, and Temperatures*/
-//    float SensorValue;
+    float SensorValue;
     int32_t PressToSend=0;
     uint16_t BattToSend=0;
     int16_t TempToSend=0,RSSIToSend=0;
-//    int32_t decPart, intPart;
-    if(TargetBoardFeatures.HandlePressSensor)
-    {
-//      if((TargetBoardFeatures.SnsAltFunc ? BSP_PRESSURE_IsInitialized : BSP_PRESSURE_IsInitialized)(TargetBoardFeatures.HandlePressSensor,&Status)==COMPONENT_OK)
-//      {
+    int32_t decPart, intPart;
+//    if(TargetBoardFeatures.HandlePressSensor) {
+//      if((TargetBoardFeatures.SnsAltFunc ? BSP_PRESSURE_IsInitialized : BSP_PRESSURE_IsInitialized)(TargetBoardFeatures.HandlePressSensor,&Status)==COMPONENT_OK) {
 //        (TargetBoardFeatures.SnsAltFunc ? BSP_PRESSURE_Get_Press : BSP_PRESSURE_Get_Press)(TargetBoardFeatures.HandlePressSensor,(float *)&SensorValue);
 //        MCR_BLUEMS_F2I_2D(SensorValue, intPart, decPart);
 //        PressToSend=intPart*100+decPart;
 //      }
-    }
+//    }
 
     Batt_Env_RSSI_Update(PressToSend,BattToSend,TempToSend,RSSIToSend);
   } else if(handle == ArmingCharHandle + 1){
