@@ -60,6 +60,8 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/
+#define MCR_BLUEMS_F2I_1D(in, out_int, out_dec) {out_int = (int32_t)in; out_dec= (int32_t)((in-out_int)*10);};
+#define MCR_BLUEMS_F2I_2D(in, out_int, out_dec) {out_int = (int32_t)in; out_dec= (int32_t)((in-out_int)*100);};
 /* USER CODE BEGIN EM */
 
 /* USER CODE END EM */
@@ -120,7 +122,99 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
 for each packet used for Console Service */
 #define W2ST_CONSOLE_MAX_CHAR_LEN 20
 /* USER CODE BEGIN Private defines */
+#define CONFIG_DATA_PUBADDR_OFFSET          (0x00) /**< Bluetooth public address */
+#define CONFIG_DATA_DIV_OFFSET              (0x06) /**< DIV used to derive CSRK */
+#define CONFIG_DATA_ER_OFFSET               (0x08) /**< Encryption root key used to derive LTK and CSRK */
+#define CONFIG_DATA_IR_OFFSET               (0x18) /**< Identity root key used to derive LTK and CSRK */
+#define CONFIG_DATA_LL_WITHOUT_HOST         (0x2C) /**< Switch on/off Link Layer only mode. Set to 1 to disable Host.
+ 	 	 	 	 	 	 	 	 	 	 	 	 	 It can be written only if aci_hal_write_config_data() is the first command 	 	 	 	 	 	 	 	 	 	 	 	 after reset. */
+#define CONFIG_DATA_RANDOM_ADDRESS          (0x80) /**< Stored static random address. Read-only. */
+/**
+ * @name Length for configuration values.
+ * See @ref aci_hal_write_config_data().
+ * @{
+ */
+#define CONFIG_DATA_PUBADDR_LEN             (6)
+#define CONFIG_DATA_DIV_LEN                 (2)
+#define CONFIG_DATA_ER_LEN                  (16)
+#define CONFIG_DATA_IR_LEN                  (16)
+#define CONFIG_DATA_LL_WITHOUT_HOST_LEN     (1)
+#define CONFIG_DATA_MODE_LEN                (1)
+#define CONFIG_DATA_WATCHDOG_DISABLE_LEN    (1)
 
+/**
+ * Select the BlueNRG mode configurations.\n
+ * @li Mode 1: slave or master, 1 connection, RAM1 only (small GATT DB)
+ * @li Mode 2: slave or master, 1 connection, RAM1 and RAM2 (large GATT DB)
+ * @li Mode 3: master/slave, 8 connections, RAM1 and RAM2.
+ * @li Mode 4: master/slave, 4 connections, RAM1 and RAM2 simultaneous scanning and advertising.
+ */
+#define CONFIG_DATA_MODE_OFFSET 			(0x2D)
+
+#define CONFIG_DATA_WATCHDOG_DISABLE 		(0x2F) /**< Set to 1 to disable watchdog. It is enabled by default. */
+
+/**
+ * @anchor Auth_req
+ * @name Authentication requirements
+ * @{
+ */
+#define BONDING				            (0x01)
+#define NO_BONDING				        (0x00)
+/**
+ * @}
+ */
+
+/**
+ * @anchor MITM_req
+ * @name MITM protection requirements
+ * @{
+ */
+#define MITM_PROTECTION_NOT_REQUIRED	(0x00)
+#define MITM_PROTECTION_REQUIRED        (0x01)
+/**
+ * @}
+ */
+
+/**
+ * @anchor OOB_Data
+ * @name Out-Of-Band data
+ * @{
+ */
+#define OOB_AUTH_DATA_ABSENT		    (0x00)
+#define OOB_AUTH_DATA_PRESENT      		(0x01)
+/**
+ * @}
+ */
+/**
+ * @anchor Use_fixed_pin
+ * @name Use fixed pin
+ * @{
+ */
+#define USE_FIXED_PIN_FOR_PAIRING		(0x00)
+#define DONOT_USE_FIXED_PIN_FOR_PAIRING	(0x01)
+/**
+ * @}
+ */
+
+
+//static int HCI_ProcessEvent=0;
+//static volatile uint32_t HCI_ProcessEvent=0;
+extern volatile uint32_t HCI_ProcessEvent;
+#define MCR_BLUEMS_F2I_2D(in, out_int, out_dec) {out_int = (int32_t)in; out_dec= (int32_t)((in-out_int)*100);};
+
+
+/* USER CODE END Private defines */
+
+/**
+  * @}
+  */
+
+/**
+  * @}
+*/
+
+extern uint8_t BufferToWrite[256];
+extern int32_t BytesToWrite;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
