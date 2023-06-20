@@ -240,11 +240,11 @@ BOOL HCI_Queue_Empty(void)
 void HCI_Isr(uint8_t *buffer, uint8_t event_payload_len)
 {
   Event_Request_Status = Waiting_For_Buffer;
-  
+
   if(event_payload_len > 0){
-    
+
     HCI_Input((tHciDataPacket*)buffer);
-    // Packet will be inserted to te correct queue by 
+    // Packet will be inserted to te correct queue by
   }
   else {
     // Insert the packet back into the pool.
