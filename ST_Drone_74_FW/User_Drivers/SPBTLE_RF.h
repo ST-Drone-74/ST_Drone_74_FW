@@ -21,7 +21,7 @@
 #include "sm.h"
 #include "bluenrg_l2cap_aci.h"
 
-extern uint32_t HCI_ProcessEvent;
+ extern volatile uint32_t HCI_ProcessEvent;
 
 // SPI Instance
 #define BNRG_SPI_INSTANCE           SPI1
@@ -112,31 +112,31 @@ extern uint32_t HCI_ProcessEvent;
    COMPONENT_NOT_IMPLEMENTED
  } DrvStatusTypeDef;
 
-void Enable_SPI_IRQ(void);
-void Disable_SPI_IRQ(void);
-void Clear_SPI_IRQ(void);
-void Clear_SPI_EXTI_Flag(void);
+extern void Enable_SPI_IRQ(void);
+extern void Disable_SPI_IRQ(void);
+extern void Clear_SPI_IRQ(void);
+extern void Clear_SPI_EXTI_Flag(void);
 
-void BNRG_SPI_Init(void);
-void BlueNRG_RST(void);
-uint8_t BlueNRG_DataPresent(void);
-void    BlueNRG_HW_Bootloader(void);
-int32_t BlueNRG_SPI_Read_All(SPI_HandleTypeDef *hspi,
+extern void BNRG_SPI_Init(void);
+extern void BlueNRG_RST(void);
+extern uint8_t BlueNRG_DataPresent(void);
+extern void    BlueNRG_HW_Bootloader(void);
+extern int32_t BlueNRG_SPI_Read_All(SPI_HandleTypeDef *hspi,
                              uint8_t *buffer,
                              uint8_t buff_size);
-int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi,
+extern int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi,
                           uint8_t* data1,
                           uint8_t* data2,
                           uint8_t Nb_bytes1,
                           uint8_t Nb_bytes2);
 
-void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_bytes1,
+extern void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_bytes1,
                       int32_t n_bytes2);
 
-void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi);
-void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-void BlueNRG_Init(void);
-void Init_BlueNRG_Custom_Services(void);
+extern void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi);
+extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
+//void BlueNRG_Init(void);
+//void Init_BlueNRG_Custom_Services(void);
 
 #ifdef __cplusplus
 }
