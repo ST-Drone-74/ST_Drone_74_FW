@@ -41,70 +41,7 @@
 #define BNRG_SPI_BAUDRATEPRESCALER  SPI_BAUDRATEPRESCALER_16
 #define BNRG_SPI_CRCCALCULATION     SPI_CRCCALCULATION_DISABLED
 
-//Modified by G.Messina
-// SPI Reset Pin: PB.2
-#define BNRG_SPI_RESET_PIN          GPIO_PIN_2
-#define BNRG_SPI_RESET_MODE         GPIO_MODE_OUTPUT_PP
-#define BNRG_SPI_RESET_PULL         GPIO_PULLUP
-#define BNRG_SPI_RESET_SPEED        GPIO_SPEED_LOW
-#define BNRG_SPI_RESET_ALTERNATE    0
-#define BNRG_SPI_RESET_PORT         GPIOB
-#define BNRG_SPI_RESET_CLK_ENABLE() __GPIOB_CLK_ENABLE()
-
-
-// SCLK: PA.5
-#define BNRG_SPI_SCLK_PIN           GPIO_PIN_5
-#define BNRG_SPI_SCLK_MODE          GPIO_MODE_AF_PP
-#define BNRG_SPI_SCLK_PULL          GPIO_PULLDOWN
-#define BNRG_SPI_SCLK_SPEED         GPIO_SPEED_HIGH
-#define BNRG_SPI_SCLK_ALTERNATE     GPIO_AF5_SPI1
-#define BNRG_SPI_SCLK_PORT          GPIOA
-#define BNRG_SPI_SCLK_CLK_ENABLE()  __GPIOA_CLK_ENABLE()
-  
-// MISO (Master Input Slave Output): PA.6
-#define BNRG_SPI_MISO_PIN           GPIO_PIN_6
-#define BNRG_SPI_MISO_MODE          GPIO_MODE_AF_PP
-#define BNRG_SPI_MISO_PULL          GPIO_NOPULL
-#define BNRG_SPI_MISO_SPEED         GPIO_SPEED_HIGH
-#define BNRG_SPI_MISO_ALTERNATE     GPIO_AF5_SPI1
-#define BNRG_SPI_MISO_PORT          GPIOA
-#define BNRG_SPI_MISO_CLK_ENABLE()  __GPIOA_CLK_ENABLE()
-
-// MOSI (Master Output Slave Input): PA.7
-#define BNRG_SPI_MOSI_PIN           GPIO_PIN_7
-#define BNRG_SPI_MOSI_MODE          GPIO_MODE_AF_PP
-#define BNRG_SPI_MOSI_PULL          GPIO_NOPULL
-#define BNRG_SPI_MOSI_SPEED         GPIO_SPEED_HIGH
-#define BNRG_SPI_MOSI_ALTERNATE     GPIO_AF5_SPI1
-#define BNRG_SPI_MOSI_PORT          GPIOA
-#define BNRG_SPI_MOSI_CLK_ENABLE()  __GPIOA_CLK_ENABLE()
-
-//Modified by G.Messina
-// NSS/CSN/CS: PB.0
-#define BNRG_SPI_CS_PIN             GPIO_PIN_0
-#define BNRG_SPI_CS_MODE            GPIO_MODE_OUTPUT_PP
-#define BNRG_SPI_CS_PULL            GPIO_PULLUP
-#define BNRG_SPI_CS_SPEED           GPIO_SPEED_HIGH
-#define BNRG_SPI_CS_ALTERNATE       0
-#define BNRG_SPI_CS_PORT            GPIOB
-#define BNRG_SPI_CS_CLK_ENABLE()    __GPIOB_CLK_ENABLE()
-
-//Modified by G.Messina
-// IRQ: PA.4
-#define BNRG_SPI_IRQ_PIN            GPIO_PIN_4
-#define BNRG_SPI_IRQ_MODE           GPIO_MODE_IT_RISING
-#define BNRG_SPI_IRQ_PULL           GPIO_NOPULL
-#define BNRG_SPI_IRQ_SPEED          GPIO_SPEED_HIGH
-#define BNRG_SPI_IRQ_ALTERNATE      0
-#define BNRG_SPI_IRQ_PORT           GPIOA
-#define BNRG_SPI_IRQ_CLK_ENABLE()   __GPIOA_CLK_ENABLE()
-
-#define BNRG_SPI_EXTI_IRQn          EXTI4_IRQn
-#define BNRG_SPI_EXTI_PIN           BNRG_SPI_IRQ_PIN
-#define BNRG_SPI_EXTI_PORT          BNRG_SPI_IRQ_PORT
-
-
- typedef enum
+typedef enum
  {
    COMPONENT_OK = 0,
    COMPONENT_ERROR,
@@ -135,8 +72,8 @@ extern void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_byt
 
 extern void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi);
 extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-//void BlueNRG_Init(void);
-//void Init_BlueNRG_Custom_Services(void);
+extern void BlueNRG_Init(void);
+extern void Init_BlueNRG_Custom_Services(void);
 
 #ifdef __cplusplus
 }

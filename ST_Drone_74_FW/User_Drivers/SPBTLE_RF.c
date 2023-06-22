@@ -18,8 +18,6 @@ extern volatile uint32_t ms_counter;
 #define TIMEOUT_DURATION 15
 
 SPI_HandleTypeDef SpiHandle;
-//GPIO_InitTypeDef GPIO_InitStruct;
-//uint32_t HCI_ProcessEvent=1;
 /* Private function prototypes -----------------------------------------------*/
 static void us150Delay(void);
 void set_irq_as_output(void);
@@ -121,9 +119,9 @@ void BNRG_SPI_Init(void)
 */
 void BlueNRG_RST(void)
 {
-  HAL_GPIO_WritePin(BNRG_SPI_RESET_PORT, BNRG_SPI_RESET_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(BLE_RSTN_Port, BLE_RSTN_Pin, GPIO_PIN_RESET);
   HAL_Delay(5);
-  HAL_GPIO_WritePin(BNRG_SPI_RESET_PORT, BNRG_SPI_RESET_PIN, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(BLE_RSTN_Port, BLE_RSTN_Pin, GPIO_PIN_SET);
   HAL_Delay(5);
 }
 
@@ -173,7 +171,7 @@ int32_t BlueNRG_SPI_Read_All(SPI_HandleTypeDef *hspi, uint8_t *buffer,
   uint8_t header_slave[HEADER_SIZE];
   
   /* CS reset */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(BLE_CS_Port, BLE_CS_Pin, GPIO_PIN_RESET);
   
   /* Read the header */  
   HAL_SPI_TransmitReceive(hspi, header_master, header_slave, HEADER_SIZE, TIMEOUT_DURATION);
@@ -201,7 +199,7 @@ int32_t BlueNRG_SPI_Read_All(SPI_HandleTypeDef *hspi, uint8_t *buffer,
     }    
   }
   /* Release CS line */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(BLE_CS_Port, BLE_CS_Pin, GPIO_PIN_SET);
   
   // Add a small delay to give time to the BlueNRG to set the IRQ pin low
   // to avoid a useless SPI read at the end of the transaction
@@ -262,7 +260,7 @@ int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi, uint8_t* data1,
   }
   
   /* CS reset */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(BLE_CS_Port, BLE_CS_Pin, GPIO_PIN_RESET);
   
   /* Exchange header */  
   __disable_irq();
@@ -308,7 +306,7 @@ int32_t BlueNRG_SPI_Write(SPI_HandleTypeDef *hspi, uint8_t* data1,
   }
   
   /* Release CS line */
-  HAL_GPIO_WritePin(BNRG_SPI_CS_PORT, BNRG_SPI_CS_PIN, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(BLE_CS_Port, BLE_CS_Pin, GPIO_PIN_SET);
   Enable_SPI_IRQ();
   return result;
 }
@@ -415,142 +413,142 @@ void Clear_SPI_EXTI_Flag(void)
   __HAL_GPIO_EXTI_CLEAR_IT(BNRG_SPI_EXTI_PIN);  
 }
 
-//void BlueNRG_Init(void)
-//{
-//
-//  int ret = 1;
-//  uint8_t bdaddr[6];
-//  uint8_t  hwVersion=0;
-//  uint16_t fwVersion=0;
-//  uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
-//  DrvStatusTypeDef testStatus;
-//
-//  PRINTF("****** START BLE TESTS ******\r\n");
-//  BNRG_SPI_Init();
-//
-//  bdaddr[0] = (STM32_UUID[1]>>24)&0xFF;
-//  bdaddr[1] = (STM32_UUID[0]    )&0xFF;
-//  bdaddr[2] = (STM32_UUID[2] >>8)&0xFF;
-//  bdaddr[3] = (STM32_UUID[0]>>16)&0xFF;
-//  bdaddr[4] = (hwVersion > 0x30) ?
-//            ((((0x34-48)*10) + (0x30-48)+100)&0xFF) :
-//            ((((0x34-48)*10) + (0x30-48)    )&0xFF) ;
-//  bdaddr[5] = 0xC0; /* for a Legal BLE Random MAC */
-//
-//  /* Initialize the BlueNRG HCI */
-//  HCI_Init();
-//
-// /* Reset BlueNRG hardware */
-//  BlueNRG_RST();
-//
-//  /* get the BlueNRG HW and FW versions */
-//  PRINTF("\r\nReading BlueNRG version ...\r\n");
-//  if (getBlueNRGVersion(&hwVersion, &fwVersion)== BLE_STATUS_SUCCESS)
-//  {
-//     //Reset BlueNRG again otherwise it will fail.
-//    BlueNRG_RST();
-//
-//    PRINTF("GATT Initializzation...\r\n");
-//    ret = aci_gatt_init();
-//    if(ret)
-//    {
-//      testStatus = COMPONENT_ERROR;
-//      PRINTF("\r\nGATT_Init failed ****\r\n");
-//      goto fail;
-//    }
-//    //Set the GAP INIT like X-NUCLEO-IDB05A1 eval board  since using same SPBTLE_RF module
-//    ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x07, &service_handle, &dev_name_char_handle, &appearance_char_handle);
-//
-//    if(ret != BLE_STATUS_SUCCESS)
-//    {
-//      PRINTF("\r\nGAP_Init failed\r\n");
-//      goto fail;
-//    }
-//    ret = hci_le_set_random_address(bdaddr);
-//    const char BoardName[7] = {NAME_BLUEMS};
-//    ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
-//                                       7/*strlen(BoardName)*/, (uint8_t *)BoardName);
-//
-//    PRINTF("GAP setting Authentication ....\r\n");
-//    ret = aci_gap_set_auth_requirement(MITM_PROTECTION_REQUIRED,
-//                                       OOB_AUTH_DATA_ABSENT,
-//                                       NULL, 7, 16,
-//                                       USE_FIXED_PIN_FOR_PAIRING, 123456,
-//                                       BONDING);
-//    if (ret != BLE_STATUS_SUCCESS)
-//    {
-//      testStatus = COMPONENT_ERROR;
-//       PRINTF("\r\nGAP setting Authentication failed ******\r\n");
-//       goto fail;
-//    }
-//
-//    PRINTF("SERVER: BLE Stack Initialized \r\n"
-//           "Board HWver=%d, FWver=%d.%d.%c\r\n"
-//           "BoardMAC = %x:%x:%x:%x:%x:%x\r\n",
-//           hwVersion,
-//           fwVersion>>8,
-//           (fwVersion>>4)&0xF,
-//           (hwVersion > 0x30) ? ('a'+(fwVersion&0xF)-1) : 'a',
-//           bdaddr[5],bdaddr[4],bdaddr[3],bdaddr[2],bdaddr[1],bdaddr[0]);
-//
-//    /* Set output power level */
-//    aci_hal_set_tx_power_level(1,4);    /* -2.1dBm */
-//
-//    ret = Add_ConsoleW2ST_Service();
-//    if(ret == BLE_STATUS_SUCCESS)
-//    {
-//       PRINTF("Console Service W2ST added successfully\r\n");
-//    }
-//    else
-//    {
-//       testStatus = COMPONENT_ERROR;
-//       PRINTF("\r\nError while adding Console Service W2ST\r\n");
-//    }
-//
-//    ret = Add_ConfigW2ST_Service();
-//    if(ret == BLE_STATUS_SUCCESS)
-//       PRINTF("Config  Service W2ST added successfully\r\n");
-//    else{
-//       testStatus = COMPONENT_ERROR;
-//       PRINTF("\r\nError while adding Config Service W2ST\r\n");
-//    }
-//
-//    PRINTF("\r\nAll test passed!\r\n");
-//  }
-//  else {
-//       testStatus = COMPONENT_ERROR;
-//       PRINTF("\r\nError in BlueNRG tests. ******\r\n");
-//  }
-//  PRINTF("****** END BLE TESTS ******\r\n");
-//  return;
-//
-//fail:
-//  testStatus = COMPONENT_ERROR;
-//  return;
-//}
+void BlueNRG_Init(void)
+{
 
-//void Init_BlueNRG_Custom_Services(void)
-//{
-//	  int ret;
-//
-//	  ret = Add_HWServW2ST_Service();
-//	  if(ret == BLE_STATUS_SUCCESS) {
-//	     PRINTF("HW      Service W2ST added successfully\r\n");
-//	  } else {
-//	     PRINTF("\r\nError while adding HW Service W2ST\r\n");
-//	  }
-//
-//	  ret = Add_ConsoleW2ST_Service();
-//	  if(ret == BLE_STATUS_SUCCESS) {
-//	     PRINTF("Console Service W2ST added successfully\r\n");
-//	  } else {
-//	     PRINTF("\r\nError while adding Console Service W2ST\r\n");
-//	  }
-//
-//	  ret = Add_ConfigW2ST_Service();
-//	  if(ret == BLE_STATUS_SUCCESS) {
-//	     PRINTF("Config  Service W2ST added successfully\r\n");
-//	  } else {
-//	     PRINTF("\r\nError while adding Config Service W2ST\r\n");
-//	  }
-//}
+ int ret = 1;
+ uint8_t bdaddr[6];
+ uint8_t  hwVersion=0;
+ uint16_t fwVersion=0;
+ uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
+ DrvStatusTypeDef testStatus;
+
+ PRINTF("****** START BLE TESTS ******\r\n");
+ BNRG_SPI_Init();
+
+ bdaddr[0] = (STM32_UUID[1]>>24)&0xFF;
+ bdaddr[1] = (STM32_UUID[0]    )&0xFF;
+ bdaddr[2] = (STM32_UUID[2] >>8)&0xFF;
+ bdaddr[3] = (STM32_UUID[0]>>16)&0xFF;
+ bdaddr[4] = (hwVersion > 0x30) ?
+           ((((0x34-48)*10) + (0x30-48)+100)&0xFF) :
+           ((((0x34-48)*10) + (0x30-48)    )&0xFF) ;
+ bdaddr[5] = 0xC0; /* for a Legal BLE Random MAC */
+
+ /* Initialize the BlueNRG HCI */
+ HCI_Init();
+
+/* Reset BlueNRG hardware */
+ BlueNRG_RST();
+
+ /* get the BlueNRG HW and FW versions */
+ PRINTF("\r\nReading BlueNRG version ...\r\n");
+ if (getBlueNRGVersion(&hwVersion, &fwVersion)== BLE_STATUS_SUCCESS)
+ {
+    //Reset BlueNRG again otherwise it will fail.
+   BlueNRG_RST();
+
+   PRINTF("GATT Initializzation...\r\n");
+   ret = aci_gatt_init();
+   if(ret)
+   {
+     testStatus = COMPONENT_ERROR;
+     PRINTF("\r\nGATT_Init failed ****\r\n");
+     goto fail;
+   }
+   //Set the GAP INIT like X-NUCLEO-IDB05A1 eval board  since using same SPBTLE_RF module
+   ret = aci_gap_init_IDB05A1(GAP_PERIPHERAL_ROLE_IDB05A1, 0, 0x07, &service_handle, &dev_name_char_handle, &appearance_char_handle);
+
+   if(ret != BLE_STATUS_SUCCESS)
+   {
+     PRINTF("\r\nGAP_Init failed\r\n");
+     goto fail;
+   }
+   ret = hci_le_set_random_address(bdaddr);
+   const char BoardName[7] = {NAME_BLUEMS};
+   ret = aci_gatt_update_char_value(service_handle, dev_name_char_handle, 0,
+                                      7/*strlen(BoardName)*/, (uint8_t *)BoardName);
+
+   PRINTF("GAP setting Authentication ....\r\n");
+   ret = aci_gap_set_auth_requirement(MITM_PROTECTION_REQUIRED,
+                                      OOB_AUTH_DATA_ABSENT,
+                                      NULL, 7, 16,
+                                      USE_FIXED_PIN_FOR_PAIRING, 123456,
+                                      BONDING);
+   if (ret != BLE_STATUS_SUCCESS)
+   {
+     testStatus = COMPONENT_ERROR;
+      PRINTF("\r\nGAP setting Authentication failed ******\r\n");
+      goto fail;
+   }
+
+   PRINTF("SERVER: BLE Stack Initialized \r\n"
+          "Board HWver=%d, FWver=%d.%d.%c\r\n"
+          "BoardMAC = %x:%x:%x:%x:%x:%x\r\n",
+          hwVersion,
+          fwVersion>>8,
+          (fwVersion>>4)&0xF,
+          (hwVersion > 0x30) ? ('a'+(fwVersion&0xF)-1) : 'a',
+          bdaddr[5],bdaddr[4],bdaddr[3],bdaddr[2],bdaddr[1],bdaddr[0]);
+
+   /* Set output power level */
+   aci_hal_set_tx_power_level(1,4);    /* -2.1dBm */
+
+   ret = Add_ConsoleW2ST_Service();
+   if(ret == BLE_STATUS_SUCCESS)
+   {
+      PRINTF("Console Service W2ST added successfully\r\n");
+   }
+   else
+   {
+      testStatus = COMPONENT_ERROR;
+      PRINTF("\r\nError while adding Console Service W2ST\r\n");
+   }
+
+   ret = Add_ConfigW2ST_Service();
+   if(ret == BLE_STATUS_SUCCESS)
+      PRINTF("Config  Service W2ST added successfully\r\n");
+   else{
+      testStatus = COMPONENT_ERROR;
+      PRINTF("\r\nError while adding Config Service W2ST\r\n");
+   }
+
+   PRINTF("\r\nAll test passed!\r\n");
+ }
+ else {
+      testStatus = COMPONENT_ERROR;
+      PRINTF("\r\nError in BlueNRG tests. ******\r\n");
+ }
+ PRINTF("****** END BLE TESTS ******\r\n");
+ return;
+
+fail:
+ testStatus = COMPONENT_ERROR;
+ return;
+}
+
+void Init_BlueNRG_Custom_Services(void)
+{
+	  int ret;
+
+	  ret = Add_HWServW2ST_Service();
+	  if(ret == BLE_STATUS_SUCCESS) {
+	     PRINTF("HW      Service W2ST added successfully\r\n");
+	  } else {
+	     PRINTF("\r\nError while adding HW Service W2ST\r\n");
+	  }
+
+	  ret = Add_ConsoleW2ST_Service();
+	  if(ret == BLE_STATUS_SUCCESS) {
+	     PRINTF("Console Service W2ST added successfully\r\n");
+	  } else {
+	     PRINTF("\r\nError while adding Console Service W2ST\r\n");
+	  }
+
+	  ret = Add_ConfigW2ST_Service();
+	  if(ret == BLE_STATUS_SUCCESS) {
+	     PRINTF("Config  Service W2ST added successfully\r\n");
+	  } else {
+	     PRINTF("\r\nError while adding Config Service W2ST\r\n");
+	  }
+}

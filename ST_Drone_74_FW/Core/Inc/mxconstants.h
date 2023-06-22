@@ -74,8 +74,6 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
-#define BLE_IRQ_Pin             GPIO_PIN_4
-#define BLE_IRQ_Port            GPIOA
 #define LSM6DS33_CS_Pin         GPIO_PIN_8
 #define LSM6DS33_CS_Port        GPIOA
 #define BLE_CS_Pin              GPIO_PIN_0
@@ -91,6 +89,20 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
 #define LIS2MDL_CS_Pin          GPIO_PIN_12
 #define LIS2MDL_CS_Port         GPIOB
 
+/*  SPBTLE-RF pin define*/
+#define BNRG_SPI_IRQ_PIN            GPIO_PIN_4
+#define BNRG_SPI_IRQ_MODE           GPIO_MODE_IT_RISING
+#define BNRG_SPI_IRQ_PULL           GPIO_NOPULL
+#define BNRG_SPI_IRQ_SPEED          GPIO_SPEED_HIGH
+#define BNRG_SPI_IRQ_ALTERNATE      0
+#define BNRG_SPI_IRQ_PORT           GPIOA
+#define BNRG_SPI_IRQ_CLK_ENABLE()   __GPIOA_CLK_ENABLE()
+
+#define BNRG_SPI_EXTI_IRQn          EXTI4_IRQn
+#define BNRG_SPI_EXTI_PIN           BNRG_SPI_IRQ_PIN
+#define BNRG_SPI_EXTI_PORT          BNRG_SPI_IRQ_PORT
+
+/*BLE define*/
 #define NAME_BLUEMS 'D','R','N','1','1','2','0'
 #define STM32_UUID ((uint32_t *)0x1FFF7A10)
 #define GAP_PERIPHERAL_ROLE_IDB05A1			(0x01)
@@ -99,7 +111,6 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
 #define GAP_OBSERVER_ROLE_IDB05A1			(0x08)
 #define MAC_BLUEMS 0xFF, 0xEE, 0xDD, 0xAA, 0xAA, 0xAA
 
-/*BLE define*/
 #define COPY_UUID_128(uuid_struct, uuid_15, uuid_14, uuid_13, uuid_12, uuid_11, uuid_10, uuid_9, uuid_8, uuid_7, uuid_6, uuid_5, uuid_4, uuid_3, uuid_2, uuid_1, uuid_0) \
 {\
   uuid_struct[0 ] = uuid_0 ; uuid_struct[1 ] = uuid_1 ; uuid_struct[2 ] = uuid_2 ; uuid_struct[3 ] = uuid_3 ; \
