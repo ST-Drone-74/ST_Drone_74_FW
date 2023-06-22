@@ -762,21 +762,11 @@ static void GAP_DisconnectionComplete_CB(void)
  */
 void Read_Request_CB(uint16_t handle)
 {
-  uint8_t Status;  
   if(handle == EnvironmentalCharHandle + 1){
     /* Read Request for Pressure,Battery, and Temperatures*/
-    float SensorValue;
     int32_t PressToSend=0;
     uint16_t BattToSend=0;
     int16_t TempToSend=0,RSSIToSend=0;
-    int32_t decPart, intPart;
-//    if(TargetBoardFeatures.HandlePressSensor) {
-//      if((TargetBoardFeatures.SnsAltFunc ? BSP_PRESSURE_IsInitialized : BSP_PRESSURE_IsInitialized)(TargetBoardFeatures.HandlePressSensor,&Status)==COMPONENT_OK) {
-//        (TargetBoardFeatures.SnsAltFunc ? BSP_PRESSURE_Get_Press : BSP_PRESSURE_Get_Press)(TargetBoardFeatures.HandlePressSensor,(float *)&SensorValue);
-//        MCR_BLUEMS_F2I_2D(SensorValue, intPart, decPart);
-//        PressToSend=intPart*100+decPart;
-//      }
-//    }
 
     Batt_Env_RSSI_Update(PressToSend,BattToSend,TempToSend,RSSIToSend);
   } else if(handle == ArmingCharHandle + 1){

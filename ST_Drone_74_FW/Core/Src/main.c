@@ -12,7 +12,7 @@
 #include "sensor_service.h"
 #include "bluenrg_utils.h"
 //#include "TargetFeatures.h"
-
+#include <mxconstants.h>
 #include "bluenrg_l2cap_aci.h"
 
 /* USER CODE END Includes */
@@ -396,15 +396,63 @@ void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __GPIOC_CLK_ENABLE();
+  __GPIOH_CLK_ENABLE();
   __GPIOA_CLK_ENABLE();
   __GPIOB_CLK_ENABLE();
 
-  /*Configure GPIO pins : PB4 PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_4|GPIO_PIN_5;
+  /*Configure GPIO pins : PC13 PC14 PC15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB0 PB2 PB10 PB12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA8 */
+  GPIO_InitStruct.Pin = GPIO_PIN_8;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PA15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PB3 PB4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_3|GPIO_PIN_4;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_OD;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC13*/
+  GPIO_InitStruct.Pin = GPIO_PIN_13;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LED3_Port, LED3_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LED2_Port, LED2_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LIS2MDL_CS_Port, LIS2MDL_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LPS22H_CS_Port, LPS22H_CS_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(LSM6DS33_CS_Port, LSM6DS33_CS_Pin, GPIO_PIN_SET);
 
 }
 
@@ -413,6 +461,100 @@ void MX_GPIO_Init(void)
  *  Handle Timer9 interrupt @ 800Hz
  *  Set the event flag and increase time index
  */
+void SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t *val)
+{
+  /* In master RX mode the clock is automaticaly generated on the SPI enable.
+  So to guarantee the clock generation for only one data, the clock must be
+  disabled after the first bit and before the latest bit */
+  /* Interrupts should be disabled during this operation */
+
+  __disable_irq();
+  //GPIOA->BSRR = (uint32_t)GPIO_PIN_8 << 16U;
+  __HAL_SPI_ENABLE(xSpiHandle);
+
+  	__asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");__asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+    __asm("dsb\n");
+
+
+  __HAL_SPI_DISABLE(xSpiHandle);
+
+  __enable_irq();
+
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_RXNE) != SPI_FLAG_RXNE);
+  /* read the received data */
+  *val = *(__IO uint8_t *) &xSpiHandle->Instance->DR;
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY);
+}
+
+void SPI_Read_nBytes(SPI_HandleTypeDef* xSpiHandle, uint8_t *val, uint8_t size)
+{
+  /* Interrupts should be disabled during this operation */
+  __disable_irq();
+  __HAL_SPI_ENABLE(xSpiHandle);
+
+  /* Transfer loop */
+  while (size > 1U)
+  {
+    /* Check the RXNE flag */
+    if (xSpiHandle->Instance->SR & SPI_FLAG_RXNE)
+    {
+      /* read the received data */
+      *val = *(__IO uint8_t *) &xSpiHandle->Instance->DR;
+      val += sizeof(uint8_t);
+      size--;
+    }
+  }
+  __enable_irq();
+}
+
+void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val)
+{
+  /* check TXE flag */
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_TXE) != SPI_FLAG_TXE);
+
+  /* Write the data */
+  *((__IO uint8_t*) &xSpiHandle->Instance->DR) = val;
+
+  /* Wait BSY flag */
+  while ((xSpiHandle->Instance->SR & SPI_SR_TXE) != SPI_SR_TXE);
+  while ((xSpiHandle->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY);
+}
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   
