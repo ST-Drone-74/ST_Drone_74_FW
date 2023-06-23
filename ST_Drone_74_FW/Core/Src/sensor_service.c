@@ -529,43 +529,43 @@ fail:
  * @param  SensorAxes_t Mag Structure containing magneto value
  * @retval tBleStatus      Status
  */
-//tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag)
-//{
-//  tBleStatus ret;
-//
-//  uint8_t buff[2+3*3*2];
-//
-//  STORE_LE_16(buff   ,(HAL_GetTick()>>3));
-//
-//  STORE_LE_16(buff+2 ,Acc->AXIS_X);
-//  STORE_LE_16(buff+4 ,Acc->AXIS_Y);
-//  STORE_LE_16(buff+6 ,Acc->AXIS_Z);
-//
-//  Gyro->AXIS_X/=100;
-//  Gyro->AXIS_Y/=100;
-//  Gyro->AXIS_Z/=100;
-//
-//  STORE_LE_16(buff+8 ,Gyro->AXIS_X);
-//  STORE_LE_16(buff+10,Gyro->AXIS_Y);
-//  STORE_LE_16(buff+12,Gyro->AXIS_Z);
-//
-//  STORE_LE_16(buff+14,Mag->AXIS_X);
-//  STORE_LE_16(buff+16,Mag->AXIS_Y);
-//  STORE_LE_16(buff+18,Mag->AXIS_Z);
-//
-//  ret = ACI_GATT_UPDATE_CHAR_VALUE(HWServW2STHandle, AccGyroMagCharHandle, 0, 2+3*3*2, buff);
-//
-//  if (ret != BLE_STATUS_SUCCESS){
-//    if(W2ST_CHECK_CONNECTION(W2ST_CONNECT_STD_ERR)){
-//      BytesToWrite =sprintf((char *)BufferToWrite, "Error Updating Acc/Gyro/Mag Char\r\n");
-//      Stderr_Update(BufferToWrite,BytesToWrite);
-//    } else {
-//      PRINTF("Error Updating Acc/Gyro/Mag Char\r\n");
-//    }
-//    return BLE_STATUS_ERROR;
-//  }
-//  return BLE_STATUS_SUCCESS;
-//}
+tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag)
+{
+  tBleStatus ret;
+
+  uint8_t buff[2+3*3*2];
+
+  STORE_LE_16(buff   ,(HAL_GetTick()>>3));
+
+  STORE_LE_16(buff+2 ,Acc->AXIS_X);
+  STORE_LE_16(buff+4 ,Acc->AXIS_Y);
+  STORE_LE_16(buff+6 ,Acc->AXIS_Z);
+
+  Gyro->AXIS_X/=100;
+  Gyro->AXIS_Y/=100;
+  Gyro->AXIS_Z/=100;
+
+  STORE_LE_16(buff+8 ,Gyro->AXIS_X);
+  STORE_LE_16(buff+10,Gyro->AXIS_Y);
+  STORE_LE_16(buff+12,Gyro->AXIS_Z);
+
+  STORE_LE_16(buff+14,Mag->AXIS_X);
+  STORE_LE_16(buff+16,Mag->AXIS_Y);
+  STORE_LE_16(buff+18,Mag->AXIS_Z);
+
+  ret = ACI_GATT_UPDATE_CHAR_VALUE(HWServW2STHandle, AccGyroMagCharHandle, 0, 2+3*3*2, buff);
+
+  if (ret != BLE_STATUS_SUCCESS){
+    if(W2ST_CHECK_CONNECTION(W2ST_CONNECT_STD_ERR)){
+      BytesToWrite =sprintf((char *)BufferToWrite, "Error Updating Acc/Gyro/Mag Char\r\n");
+      Stderr_Update(BufferToWrite,BytesToWrite);
+    } else {
+      PRINTF("Error Updating Acc/Gyro/Mag Char\r\n");
+    }
+    return BLE_STATUS_ERROR;
+  }
+  return BLE_STATUS_SUCCESS;
+}
 
 /**
  * @brief  Update Battery, Environmental and RSSI characteristic value
