@@ -42,13 +42,10 @@
   */
 #include <stdio.h>
 #include "TargetFeatures.h"
-//#include "main.h"
 #include "sensor_service.h"
-//#include "console.h"
 #include "bluenrg_utils.h"
 #include "bluenrg_l2cap_aci.h"
 #include "uuid_ble_service.h"
-//#include "steval_fcu001_v1_pressure.h"
 
 /* Exported variables ---------------------------------------------------------*/
 int connected = FALSE;

@@ -13,5 +13,14 @@
 #include "gyro_driver.h"
 #include "mag_driver.h"
 #include "motor_driver.h"
+#include "sensor_service.h"
+
+/*Variables*/
+extern SensorAxes_t baroBleSentValue_st;
+extern SensorAxes_t magBleSentValue_st;
+extern SensorAxes_t accelBleSentValue_st;
+extern SensorAxes_t gyroBleSentValue_st;
+/*Function*/
+extern void all_Sensor_Init(void);
 
 #endif /* SENSOR_MANAGEMENT_H_ */
