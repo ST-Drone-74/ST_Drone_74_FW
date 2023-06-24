@@ -41,7 +41,7 @@
   ******************************************************************************
   */
 #include <stdio.h>
-#include "TargetFeatures.h"
+// #include "TargetFeatures.h"
 #include "sensor_service.h"
 #include "bluenrg_utils.h"
 #include "bluenrg_l2cap_aci.h"
@@ -54,8 +54,8 @@ uint8_t set_connectable = TRUE;
 /* Imported Variables -------------------------------------------------------------*/
 extern uint32_t ConnectionBleStatus;
 
-extern uint8_t bdaddr[6];
-extern uint8_t joydata[];
+uint8_t bdaddr[6];
+uint8_t joydata[8] = {0,0,0,0,0,0,0,0};
 
 
 /* Private variables ------------------------------------------------------------*/

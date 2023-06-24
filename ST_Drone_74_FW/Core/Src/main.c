@@ -3,23 +3,23 @@
 #include "usb_device.h"
 
 /* USER CODE BEGIN Includes */
-#include "ahrs.h"
-#include "flight_control.h"
-//#include "motor.h"
 #include "ble_status.h"
 #include "SPBTLE_RF.h"
 #include "bluenrg_gatt_server.h"
 #include "sensor_service.h"
 #include "bluenrg_utils.h"
-//#include "TargetFeatures.h"
-#include <mxconstants.h>
 #include "bluenrg_l2cap_aci.h"
+#include <mxconstants.h>
+#include <ahrs.h>
+#include <flight_control.h>
+#include <pid_control.h>
+#include <remote_control.h>
+#include <sensor_management.h>
 
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
 volatile uint32_t HCI_ProcessEvent=0;
-uint8_t joydata[8] = {0,0,0,0,0,0,0,0};
 
 ADC_HandleTypeDef hadc1;
 
@@ -34,7 +34,6 @@ UART_HandleTypeDef huart1;
 
 /* BLE module */
 DrvStatusTypeDef testStatus = COMPONENT_OK;
-uint8_t bdaddr[6];
 extern int connected;
 
 /* Private function prototypes -----------------------------------------------*/
@@ -86,8 +85,6 @@ int32_t BytesToWrite;
 
   /* USER CODE BEGIN 2 */
 
-  PRINTF("STEVAL-FCU001V1 FW rev.1.0 - Sep 2017\n\n");
-
   /* Initialize TIM2 for External Remocon RF receiver PWM Input*/
   HAL_TIM_IC_Start_IT(&htim2,TIM_CHANNEL_1);
   HAL_TIM_IC_Start_IT(&htim2,TIM_CHANNEL_2);
@@ -106,17 +103,20 @@ int32_t BytesToWrite;
   /* BLE communication */
   PRINTF("BLE communication initialization...\n\n");
   BlueNRG_Init();
-  /* Initialize the BlueNRG Custom services */
   Init_BlueNRG_Custom_Services();
 
-  /* USER CODE END 2 */
+  /*Motor init*/
+  set_All_Motor_Stop();
 
+  /*Senors init*/
+  all_Sensor_Init();
+
+  /* USER CODE END 2 */
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
     /* USER CODE END WHILE */
-
     /* USER CODE BEGIN 3 */
     if(HCI_ProcessEvent)
     {
@@ -130,6 +130,9 @@ int32_t BytesToWrite;
           setConnectable();
           set_connectable = FALSE;
     }
+
+    /*BLE update sensors data*/
+    AccGyroMag_Update(&accelBleSentValue_st, &gyroBleSentValue_st, &magBleSentValue_st);
   }
   /* USER CODE END 3 */
 
@@ -194,7 +197,7 @@ void MX_ADC1_Init(void)
     /**Configure the global features of the ADC (Clock, Resolution, Data Alignment and number of conversion)
     */
   hadc1.Instance = ADC1;
-  hadc1.Init.ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV4;
+  hadc1.Init.ClockPrescaler = ADC_CLOCKPRESCALER_PCLK_DIV2;
   hadc1.Init.Resolution = ADC_RESOLUTION12b;
   hadc1.Init.ScanConvMode = DISABLE;
   hadc1.Init.ContinuousConvMode = DISABLE;
@@ -309,16 +312,16 @@ void MX_TIM4_Init(void)
   TIM_OC_InitTypeDef sConfigOC;
 
   htim4.Instance = TIM4;
-  #ifdef MOTOR_DC
-    htim4.Init.Prescaler = 84;                                    /* DC motor configuration - Freq 494Hz*/
-    htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-    htim4.Init.Period = 1999;
-  #endif
-  #ifdef MOTOR_ESC
-    htim4.Init.Prescaler = 100;                                    /* ESC motor configuration - Freq 400Hz*/
-    htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
-    htim4.Init.Period = 2075;
-  #endif
+#ifdef DC_MOTOR
+  htim4.Init.Prescaler = 84;                                    /* DC motor configuration - Freq 494Hz*/
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 1999;
+#endif/*DC_MOTOR*/
+#ifdef BRSHLESS_MOTOR
+  htim4.Init.Prescaler = 100;                                    /* ESC motor configuration - Freq 400Hz*/
+  htim4.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim4.Init.Period = 2075;
+#endif/*BRSHLESS_MOTOR*/
 
   htim4.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   HAL_TIM_Base_Init(&htim4);

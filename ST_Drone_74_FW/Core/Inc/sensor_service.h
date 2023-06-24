@@ -50,8 +50,6 @@
 #endif 
 
 /* Includes ------------------------------------------------------------------*/
-//#include "TargetFeatures.h"
-
 #include "hal_types.h"
 #include "bluenrg_gatt_server.h"
 #include "bluenrg_gap.h"
@@ -66,8 +64,53 @@
 #include "hal.h"
 #include "sm.h"
 #include "debug.h"
-
 #include <stdlib.h>
+
+#define MAX_TEMP_SENSORS 2
+ /* BlueNRG Board Type */
+#define IDB04A1 0
+#define IDB05A1 1
+
+#define DRN_VERSION_MAJOR '1'
+#define DRN_VERSION_MINOR '1'
+#define DRN_VERSION_PATCH '0'
+#define NAME_DRN 'D','R','N','1',DRN_VERSION_MAJOR,DRN_VERSION_MINOR,DRN_VERSION_PATCH
+ /* Package Name */
+ #define DRN_PACKAGENAME "DRN1"
+ /* STM32 MCU_ID */
+ #define STM32_MCU_ID ((uint32_t *)0xE0042000)
+/*Target type data definition*/
+typedef enum
+{
+  TARGET_NUCLEO,
+  TARGET_SENSORTILE,
+  TARGETS_NUMBER
+} TargetType_t;
+
+/*Target's Features data structure definition*/
+typedef struct
+{
+  TargetType_t BoardType;
+  int32_t NumTempSensors;
+  void *HandleTempSensors[MAX_TEMP_SENSORS];
+
+  void *HandlePressSensor;
+  void *HandleHumSensor;
+
+  int32_t HWAdvanceFeatures;
+  void *HandleAccSensor;
+  void *HandleGyroSensor;
+  void *HandleMagSensor;
+
+  uint8_t LedStatus;
+  uint8_t bnrg_expansion_board;
+  uint8_t SnsAltFunc;
+
+#ifdef STM32_SENSORTILE
+  void *HandleGGComponent;
+#endif /* STM32_SENSORTILE */
+
+} TargetFeatures_t;
 
  typedef struct
  {
