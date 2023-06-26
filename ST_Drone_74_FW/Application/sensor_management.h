@@ -16,7 +16,7 @@
 #include "sensor_service.h"
 
 /*Variables*/
-extern SensorAxes_t baroBleSentValue_st;
+extern baroData_st baroBleSentValue_st;
 extern SensorAxes_t magBleSentValue_st;
 extern SensorAxes_t accelBleSentValue_st;
 extern SensorAxes_t gyroBleSentValue_st;

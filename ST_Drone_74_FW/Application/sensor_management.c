@@ -7,11 +7,10 @@
 #include <sensor_management.h>
 
 /*Global snesor varibales for BLE updating*/
-SensorAxes_t baroBleSentValue_st =
+baroData_st baroBleSentValue_st =
 {
-	.AXIS_X = 0,
-	.AXIS_Y = 0,
-	.AXIS_Z = 0
+	.TEMP = 0,
+	.PRESSURE = 0.0
 };
 /*Global snesor varibales for BLE updating*/
 SensorAxes_t magBleSentValue_st =

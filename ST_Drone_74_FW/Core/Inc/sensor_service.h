@@ -119,9 +119,16 @@ typedef struct
    int32_t AXIS_Z;
  } SensorAxes_t;
 
+ typedef struct
+ {
+   int16_t TEMP;
+   float PRESSURE;
+ } baroData_st;
+
 /* Exported functions ------------------------------------------------------- */
 extern tBleStatus Add_HWServW2ST_Service(void);
 extern tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag);
+extern void SendBattEnvData(int32_t pressure, int16_t temp, uint32_t vBatAdc);
 extern tBleStatus AccEvent_Notify(uint16_t Command);
 
 extern tBleStatus ARMING_Update(uint8_t ArmingStatus);
