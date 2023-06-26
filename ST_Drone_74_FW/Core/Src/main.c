@@ -133,6 +133,8 @@ int32_t BytesToWrite;
 
     /*BLE update sensors data*/
     AccGyroMag_Update(&accelBleSentValue_st, &gyroBleSentValue_st, &magBleSentValue_st);
+    /*BLE update battery and barometer data*/
+    SendBattEnvData(baroBleSentValue_st.PRESSURE, baroBleSentValue_st.TEMP, 1000);
   }
   /* USER CODE END 3 */
 

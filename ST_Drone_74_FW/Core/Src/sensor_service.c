@@ -608,6 +608,36 @@ tBleStatus Batt_Env_RSSI_Update(int32_t Press,uint16_t Batt,int16_t Temp,int16_t
   return BLE_STATUS_SUCCESS;
 }
 
+void SendBattEnvData(int32_t pressure, int16_t temp, uint32_t vBatAdc)
+{
+   int32_t decPart, intPart;
+   uint16_t BattToSend=0;
+   int16_t RSSIToSend=0, TempToSend=0;
+   int8_t rssi;
+   uint16_t conn_handle;
+   float VBAT = 0;
+   /* Pull-up resistor value [Kohm] */
+   const uint8_t BAT_RUP = 10;
+   /* Pull-Down resistor value [Kohm] */
+   const uint8_t BAT_RDW = 20;
+
+    VBAT = (((vBatAdc*3.3)/4095)*(BAT_RUP+BAT_RDW))/BAT_RDW;
+
+    MCR_BLUEMS_F2I_2D(pressure, intPart, decPart);
+    pressure=intPart*100+decPart;
+    MCR_BLUEMS_F2I_1D(((int32_t)((float)VBAT*100.0f)/4.2f), intPart, decPart);
+    BattToSend = intPart*10+decPart;
+    if (BattToSend > 1000){
+      BattToSend =1000;
+    }
+    MCR_BLUEMS_F2I_1D(temp, intPart, decPart);
+    TempToSend = intPart*10+decPart;
+
+    hci_read_rssi(&conn_handle, &rssi);
+    RSSIToSend = (int16_t)rssi*10;
+
+    Batt_Env_RSSI_Update(pressure,BattToSend,TempToSend,RSSIToSend );
+}
 
 
 /**
