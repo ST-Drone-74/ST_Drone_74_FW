@@ -122,7 +122,7 @@ int HCI_verify(const tHciDataPacket * hciReadPacket)
 ////  connected = FALSE;
 ////
 ////  /* Make the device connectable again. */
-////  set_connectable = TRUE;
+////  set_Connectable = TRUE;
 ////
 ////  ConnectionBleStatus=0;
 ////  

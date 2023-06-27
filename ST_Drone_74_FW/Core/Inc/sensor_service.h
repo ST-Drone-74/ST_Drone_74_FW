@@ -128,7 +128,8 @@ typedef struct
 /* Exported functions ------------------------------------------------------- */
 extern tBleStatus Add_HWServW2ST_Service(void);
 extern tBleStatus AccGyroMag_Update(SensorAxes_t *Acc,SensorAxes_t *Gyro,SensorAxes_t *Mag);
-extern void SendBattEnvData(int32_t pressure, int16_t temp, uint32_t vBatAdc);
+extern void SendBattEnvData(int32_t pressure, int16_t temp,
+							uint32_t (*vBatFuncPtr)());
 extern tBleStatus AccEvent_Notify(uint16_t Command);
 
 extern tBleStatus ARMING_Update(uint8_t ArmingStatus);

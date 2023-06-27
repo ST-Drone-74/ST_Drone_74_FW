@@ -41,20 +41,20 @@
   ******************************************************************************
   */
 #include <stdio.h>
-// #include "TargetFeatures.h"
 #include "sensor_service.h"
 #include "bluenrg_utils.h"
 #include "bluenrg_l2cap_aci.h"
 #include "uuid_ble_service.h"
 
 /* Exported variables ---------------------------------------------------------*/
-int connected = FALSE;
-uint8_t set_connectable = TRUE;
+int is_Ble_Connected = FALSE;
+uint8_t set_Connectable = TRUE;
 
 /* Imported Variables -------------------------------------------------------------*/
 extern uint32_t ConnectionBleStatus;
 
 uint8_t bdaddr[6];
+/*BLE API updating received SW command*/
 uint8_t joydata[8] = {0,0,0,0,0,0,0,0};
 
 
@@ -608,7 +608,7 @@ tBleStatus Batt_Env_RSSI_Update(int32_t Press,uint16_t Batt,int16_t Temp,int16_t
   return BLE_STATUS_SUCCESS;
 }
 
-void SendBattEnvData(int32_t pressure, int16_t temp, uint32_t vBatAdc)
+void SendBattEnvData(int32_t pressure, int16_t temp, uint32_t (*vBatFuncPtr)())
 {
    int32_t decPart, intPart;
    uint16_t BattToSend=0;
@@ -616,6 +616,7 @@ void SendBattEnvData(int32_t pressure, int16_t temp, uint32_t vBatAdc)
    int8_t rssi;
    uint16_t conn_handle;
    float VBAT = 0;
+   uint32_t vBatAdc = (*vBatFuncPtr)();
    /* Pull-up resistor value [Kohm] */
    const uint8_t BAT_RUP = 10;
    /* Pull-Down resistor value [Kohm] */
@@ -627,7 +628,8 @@ void SendBattEnvData(int32_t pressure, int16_t temp, uint32_t vBatAdc)
     pressure=intPart*100+decPart;
     MCR_BLUEMS_F2I_1D(((int32_t)((float)VBAT*100.0f)/4.2f), intPart, decPart);
     BattToSend = intPart*10+decPart;
-    if (BattToSend > 1000){
+    if (BattToSend > 1000)
+    {
       BattToSend =1000;
     }
     MCR_BLUEMS_F2I_1D(temp, intPart, decPart);
@@ -738,7 +740,7 @@ void setConnectable(void)
  */
 static void GAP_ConnectionComplete_CB(uint8_t addr[6], uint16_t handle)
 {  
-  connected = TRUE;
+  is_Ble_Connected = TRUE;
   connection_handle = handle;
 
 #ifdef MOTENV_DEBUG_CONNECTION
@@ -765,14 +767,14 @@ aci_l2cap_connection_parameter_update_request(connection_handle,
  */
 static void GAP_DisconnectionComplete_CB(void)
 {
-  connected = FALSE;
+  is_Ble_Connected = FALSE;
 
 #ifdef MOTENV_DEBUG_CONNECTION  
   PRINTF("<<<<<<DISCONNECTED\r\n");
 #endif /* MOTENV_DEBUG_CONNECTION */  
 
   /* Make the device connectable again. */
-  set_connectable = TRUE;
+  set_Connectable = TRUE;
 
   ConnectionBleStatus=0;
   

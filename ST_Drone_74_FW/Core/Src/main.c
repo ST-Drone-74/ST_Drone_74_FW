@@ -34,7 +34,7 @@ UART_HandleTypeDef huart1;
 
 /* BLE module */
 DrvStatusTypeDef testStatus = COMPONENT_OK;
-extern int connected;
+extern int is_Ble_Connected;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
@@ -51,7 +51,7 @@ static void Error_Handler(void);
 
 /* USER CODE BEGIN 0 */
 /* BLE */
-extern uint8_t set_connectable;
+extern uint8_t set_Connectable;
 uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
 uint32_t ConnectionBleStatus=0;
 uint8_t BufferToWrite[256];
@@ -124,17 +124,17 @@ int32_t BytesToWrite;
           HCI_Process();
     }
 
-    if(set_connectable)
+    if(set_Connectable)
     {
           /* Now update the BLE advertize data and make the Board connectable */
           setConnectable();
-          set_connectable = FALSE;
+          set_Connectable = FALSE;
     }
 
     /*BLE update sensors data*/
     AccGyroMag_Update(&accelBleSentValue_st, &gyroBleSentValue_st, &magBleSentValue_st);
     /*BLE update battery and barometer data*/
-    SendBattEnvData(baroBleSentValue_st.PRESSURE, baroBleSentValue_st.TEMP, 1000);
+    SendBattEnvData(baroBleSentValue_st.PRESSURE, baroBleSentValue_st.TEMP, vBat_ADC_Value);
   }
   /* USER CODE END 3 */
 
@@ -560,11 +560,23 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val)
   while ((xSpiHandle->Instance->SR & SPI_SR_TXE) != SPI_SR_TXE);
   while ((xSpiHandle->Instance->SR & SPI_FLAG_BSY) == SPI_FLAG_BSY);
 }
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   
 }
 
+uint32_t vBat_ADC_Value(void)
+{
+	uint32_t vBat_ADC=0;
+	HAL_ADC_Start(&hadc1);
+	if (HAL_ADC_PollForConversion(&hadc1, 1000000) == HAL_OK)
+	{
+		vBat_ADC = HAL_ADC_GetValue(&hadc1);
+	}
+	HAL_ADC_Stop(&hadc1);
+	return vBat_ADC;
+}
 /* USER CODE END 4 */
 /**
   * @brief  This function is executed in case of error occurrence.

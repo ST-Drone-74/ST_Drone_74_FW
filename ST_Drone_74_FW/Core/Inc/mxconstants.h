@@ -47,6 +47,7 @@ extern "C" {
 void SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t *val);
 void SPI_Read_nBytes(SPI_HandleTypeDef* xSpiHandle, uint8_t *val, uint8_t size);
 void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val);
+uint32_t vBat_ADC_Value(void);
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
