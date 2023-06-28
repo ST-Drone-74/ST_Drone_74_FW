@@ -20,8 +20,9 @@
 #include "bluenrg_utils.h"
 #include "sm.h"
 #include "bluenrg_l2cap_aci.h"
-
- extern volatile uint32_t HCI_ProcessEvent;
+#include "bluenrg_gatt_aci.h"
+#include "bluenrg_hal_aci.h"
+extern volatile uint32_t HCI_ProcessEvent;
 
 // SPI Instance
 #define BNRG_SPI_INSTANCE           SPI1
@@ -72,9 +73,26 @@ extern void Hal_Write_Serial(const void* data1, const void* data2, int32_t n_byt
 
 extern void HAL_SPI_MspInit(SPI_HandleTypeDef* hspi);
 extern void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
-extern void BlueNRG_Init(void);
+extern tBleStatus BlueNRG_Init(void);
 extern void Init_BlueNRG_Custom_Services(void);
 
+/*extern to avoid IDE warning*/
+extern tBleStatus aci_gap_set_auth_requirement(uint8_t mitm_mode,
+                                        uint8_t oob_enable,
+                                        uint8_t oob_data[16],
+                                        uint8_t min_encryption_key_size,
+                                        uint8_t max_encryption_key_size,
+                                        uint8_t use_fixed_pin,
+                                        uint32_t fixed_pin,
+                                        uint8_t bonding_mode);
+extern tBleStatus aci_gap_init_IDB05A1(uint8_t role, uint8_t privacy_enabled,
+										uint8_t device_name_char_len,
+										uint16_t* service_handle,
+										uint16_t* dev_name_char_handle,
+										uint16_t* appearance_char_handle);
+extern tBleStatus Add_ConsoleW2ST_Service(void);
+extern tBleStatus Add_ConfigW2ST_Service(void);
+extern tBleStatus Add_HWServW2ST_Service(void);
 #ifdef __cplusplus
 }
 #endif

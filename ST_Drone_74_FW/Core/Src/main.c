@@ -33,14 +33,12 @@ TIM_HandleTypeDef htim9;
 UART_HandleTypeDef huart1;
 
 /* BLE module */
-DrvStatusTypeDef testStatus = COMPONENT_OK;
 extern int is_Ble_Connected;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ADC1_Init(void);
-//static void MX_SPI1_Init(void);
 static void MX_SPI2_Init(void);
 static void MX_TIM2_Init(void);
 static void MX_TIM4_Init(void);

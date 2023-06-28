@@ -413,15 +413,15 @@ void Clear_SPI_EXTI_Flag(void)
   __HAL_GPIO_EXTI_CLEAR_IT(BNRG_SPI_EXTI_PIN);  
 }
 
-void BlueNRG_Init(void)
+tBleStatus BlueNRG_Init(void)
 {
 
- int ret = 1;
- uint8_t bdaddr[6];
+ tBleStatus ret = 1;
+ uint8_t bdaddr[6] = {0};
  uint8_t  hwVersion=0;
  uint16_t fwVersion=0;
  uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
- DrvStatusTypeDef testStatus;
+ DrvStatusTypeDef testStatus = COMPONENT_OK;
 
  PRINTF("****** START BLE TESTS ******\r\n");
  BNRG_SPI_Init();
@@ -520,11 +520,11 @@ void BlueNRG_Init(void)
       PRINTF("\r\nError in BlueNRG tests. ******\r\n");
  }
  PRINTF("****** END BLE TESTS ******\r\n");
- return;
+ return testStatus;
 
 fail:
  testStatus = COMPONENT_ERROR;
- return;
+ return testStatus;
 }
 
 void Init_BlueNRG_Custom_Services(void)

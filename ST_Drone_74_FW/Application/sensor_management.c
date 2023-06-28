@@ -6,27 +6,27 @@
  */
 #include <sensor_management.h>
 
-/*Global snesor varibales for BLE updating*/
+/*Global sensor varibales for BLE updating*/
 baroData_st baroBleSentValue_st =
 {
 	.TEMP = 0,
 	.PRESSURE = 0.0
 };
-/*Global snesor varibales for BLE updating*/
+/*Global sensor varibales for BLE updating*/
 SensorAxes_t magBleSentValue_st =
 {
 	.AXIS_X = 0,
 	.AXIS_Y = 0,
 	.AXIS_Z = 0
 };
-/*Global snesor varibales for BLE updating*/
+/*Global sensor varibales for BLE updating*/
 SensorAxes_t accelBleSentValue_st =
 {
 	.AXIS_X = 0,
 	.AXIS_Y = 0,
 	.AXIS_Z = 0
 };
-/*Global snesor varibales for BLE updating*/
+/*Global sensor varibales for BLE updating*/
 SensorAxes_t gyroBleSentValue_st =
 {
 	.AXIS_X = 0,
