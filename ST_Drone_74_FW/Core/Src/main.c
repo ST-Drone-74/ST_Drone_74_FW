@@ -54,7 +54,8 @@ uint16_t service_handle, dev_name_char_handle, appearance_char_handle;
 uint32_t ConnectionBleStatus=0;
 uint8_t BufferToWrite[256];
 int32_t BytesToWrite;
-
+/* 1ms System timer */
+uint8_t sys_Prd_Clk = FALSE;
 /* USER CODE END 0 */
 
  int main(void)
@@ -129,10 +130,14 @@ int32_t BytesToWrite;
           set_Connectable = FALSE;
     }
 
-    /*BLE update sensors data*/
-    AccGyroMag_Update(&accelBleSentValue_st, &gyroBleSentValue_st, &magBleSentValue_st);
-    /*BLE update battery and barometer data*/
-    SendBattEnvData(baroBleSentValue_st.PRESSURE, baroBleSentValue_st.TEMP, vBat_ADC_Value);
+    //1.8ms oscillator
+    if(sys_Prd_Clk == TRUE)
+    {
+    	/*BLE update sensors data*/
+		AccGyroMag_Update(&accelBleSentValue_st, &gyroBleSentValue_st, &magBleSentValue_st);
+		/*BLE update battery and barometer data*/
+		SendBattEnvData(baroBleSentValue_st.PRESSURE, baroBleSentValue_st.TEMP, vBat_ADC_Value);
+    }
   }
   /* USER CODE END 3 */
 
@@ -353,7 +358,8 @@ void MX_TIM4_Init(void)
 void MX_TIM9_Init(void)
 {
 
-  TIM_ClockConfigTypeDef sClockSourceConfig;
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
 
   htim9.Instance = TIM9;
   htim9.Init.Prescaler = 51;
@@ -365,6 +371,12 @@ void MX_TIM9_Init(void)
   sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
   HAL_TIM_ConfigClockSource(&htim9, &sClockSourceConfig);
 
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim9, &sMasterConfig) != HAL_OK)
+  {
+	  Error_Handler();
+  }
 }
 
 /* USART1 init function */
@@ -561,7 +573,14 @@ void SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t val)
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-  
+	if(htim->Instance == htim9.Instance)
+	{
+		sys_Prd_Clk = TRUE;
+	}
+	else
+	{
+		sys_Prd_Clk = FALSE;
+	}
 }
 
 uint32_t vBat_ADC_Value(void)
