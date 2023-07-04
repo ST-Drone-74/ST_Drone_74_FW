@@ -17,6 +17,7 @@ extern SPI_HandleTypeDef hspi2;
 
 #ifdef ACCEL_GYRO_LSM6DSL
 
+#define ACCEL_GYRO_DEVICE_NAME           0x6A
 /***********************READ-WRITE REGISTER***********************/
 #define AG_FUNC_CFG_ACCESS               0x01 // AG: accel gyro
 
@@ -158,8 +159,24 @@ extern SPI_HandleTypeDef hspi2;
 
 #endif /*ACCEL_GYRO_LSM6DSL*/
 
+typedef enum 
+{
+    AG_ERROR,
+    AG_OK
+}AccelGyro_State_e;
+
 /*ACCEL-GYRO CONTROL FUNCTION*/
-extern uint8_t compass_Init_Device(void);
-extern uint8_t compass_Read_Device_Name(uint8_t *ptr);
+extern uint8_t accelGyro_Init_Device(void);
+extern uint8_t accelGyro_Read_Device_Name(uint8_t *ptr);
+
+/*RW SINGLE REGISTER*/
+extern uint8_t accelGyro_Write_Single_Register(uint8_t address, uint8_t *txData);
+extern uint8_t accelGyro_Read_Single_Register(uint8_t address, uint8_t *rxData);
+
+/*BASIC CONTROL*/
+extern void accelGyroEnable(void);
+extern void accelGyroDisable(void);
+extern void accelGyro_SPI_Read(SPI_HandleTypeDef* xSpiHandle, uint8_t ReadAddr, uint8_t *pBuffer, uint8_t size );
+extern void accelGyro_SPI_Write(SPI_HandleTypeDef* xSpiHandle, uint8_t WriteAddr, uint8_t *pBuffer, uint8_t size );
 
 #endif /* ACCEL_DRIVER_H_ */
