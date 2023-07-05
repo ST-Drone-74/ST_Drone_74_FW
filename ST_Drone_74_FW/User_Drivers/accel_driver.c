@@ -8,7 +8,42 @@
 
 uint8_t accelGyro_Init_Device(void)
 {
-
+	uint8_t device_name = 0x00;
+	uint8_t ctrl1_Xl_Register = 0x00;
+	uint8_t ctrl2_G_Register = 0x00;
+	uint8_t ctrl3_C_Register = 0x00;
+	uint8_t ctrl4_C_Register = 0x00;
+	uint8_t ctrl5_C_Register = 0x00;
+	while(accelGyro_Read_Device_Name(&device_name) != 1)
+	{
+		/*enable 3wire SPI communication*/
+		ctrl3_C_Register = 0x08;
+		accelGyro_Write_Single_Register(AG_CTRL3_C, &ctrl3_C_Register);
+		HAL_Delay(1);
+		/*soft reset and memory reboot*/
+		ctrl3_C_Register = 0x81;
+		accelGyro_Write_Single_Register(AG_CTRL3_C, &ctrl3_C_Register);
+		HAL_Delay(1000);
+		/*enable 3wire SPI communication*/
+		ctrl3_C_Register = 0x08;
+		accelGyro_Write_Single_Register(AG_CTRL3_C, &ctrl3_C_Register);
+		HAL_Delay(1);
+		/*accelerometer ODR*/
+		ctrl1_Xl_Register = 0x40; //104Hz normal mode
+		accelGyro_Write_Single_Register(AG_CTRL1_XL, &ctrl1_Xl_Register);
+		HAL_Delay(1);
+		/*gyroscope ODR*/
+		ctrl2_G_Register = 0x40; //104Hz normal mode
+		accelGyro_Write_Single_Register(AG_CTRL2_G, &ctrl2_G_Register);
+		HAL_Delay(1);
+		/*control register 4 config*/
+		accelGyro_Write_Single_Register(AG_CTRL4_C, &ctrl4_C_Register);
+		HAL_Delay(1);
+		/*control register 5 config*/
+		accelGyro_Write_Single_Register(AG_CTRL5_C, &ctrl5_C_Register);
+		HAL_Delay(1);
+	}
+	return AG_OK;
 }
 
 uint8_t accelGyro_Read_Device_Name(uint8_t *ptr)

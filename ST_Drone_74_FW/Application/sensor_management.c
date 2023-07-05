@@ -41,4 +41,5 @@ void all_Sensor_Init(void)
 	/*init barometer lps22hd*/
 	baro_Init_Device();
 	/*init accel gyro lsm6dsl*/
+	accelGyro_Init_Device();
 }
