@@ -165,9 +165,29 @@ typedef enum
     AG_OK
 }AccelGyro_State_e;
 
+typedef enum
+{
+    accel_odr_lv_0 = 0b0000, //power down
+    accel_odr_lv_1 = 0b1011, //1.6Hz
+    accel_odr_lv_2 = 0b0001, //12.5Hz
+    accel_odr_lv_3 = 0b0010, //26Hz
+    accel_odr_lv_4 = 0b0011, //52Hz
+    accel_odr_lv_5 = 0b0100, //104Hz
+    accel_odr_lv_6 = 0b0101, //208hz
+    accel_odr_lv_7 = 0b0110, //416Hz
+    accel_odr_lv_8 = 0b0111, //833Hz
+    accel_odr_lv_9 = 0b1000, // 1.66KHz
+    accel_odr_lv_10 = 0b1001, //3.33KHz
+    accel_odr_lv_11 = 0b1010 //6.66KHz
+}Accel_Odr_Select_e;
+
 /*ACCEL-GYRO CONTROL FUNCTION*/
 extern uint8_t accelGyro_Init_Device(void);
 extern uint8_t accelGyro_Read_Device_Name(uint8_t *ptr);
+
+/*ACCEL CONTROL FUNCTION*/
+extern uint8_t accel_Set_Power_Mode(Accel_Odr_Select_e accel_Odr);
+extern uint8_t accel_Set_FullScale(uint8_t fullScale_Selection);
 
 /*RW SINGLE REGISTER*/
 extern uint8_t accelGyro_Write_Single_Register(uint8_t address, uint8_t *txData);

@@ -61,6 +61,95 @@ uint8_t accelGyro_Read_Device_Name(uint8_t *ptr)
 	return val;
 }
 
+uint8_t accel_Set_Power_Mode(Accel_Odr_Select_e accel_Odr)
+{
+	uint8_t ctrl1_Xl_Curr_Val=0x00;
+	uint8_t stateReturn = AG_OK;
+	uint8_t isParaValid = 0;
+	//check valid input
+	switch(accel_Odr)
+	{
+		case accel_odr_lv_0:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_1:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_2:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_3:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_4:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_5:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_6:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_7:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_8:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_9:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_10:
+		isParaValid = 1;
+		break;
+		case accel_odr_lv_11:
+		isParaValid = 1;
+		break;
+		default:
+		isParaValid = 0;
+	}
+
+	if(isParaValid != 0)
+	{
+		//read back ctrl1_xl register
+		accelGyro_Read_Single_Register(AG_CTRL1_XL, &ctrl1_Xl_Curr_Val);
+		//reset previous ODR value
+		ctrl1_Xl_Curr_Val &= 0x0F; //00001111
+		//asign the fullscale selection
+		ctrl1_Xl_Curr_Val |= (((uint8_t)accel_Odr)<<4);
+		//wrire fullscale to register
+		accelGyro_Write_Single_Register(AG_CTRL1_XL, &ctrl1_Xl_Curr_Val);
+	}
+	else
+	{
+		stateReturn = AG_ERROR;
+	}
+	return stateReturn;
+}
+
+uint8_t accel_Set_FullScale(uint8_t fullScale_Selection)
+{
+	uint8_t ctrl1_Xl_Curr_Val=0x00;
+	uint8_t stateReturn = AG_OK;
+	//check valid input
+	if(fullScale_Selection < 4)
+	{
+		//read back ctrl1_xl register
+		accelGyro_Read_Single_Register(AG_CTRL1_XL, &ctrl1_Xl_Curr_Val);
+		//reset previous fullscale value
+		ctrl1_Xl_Curr_Val &= 0xF3; //11110011
+		//asign the fullscale selection
+		ctrl1_Xl_Curr_Val |= (fullScale_Selection << 2);
+		//wrire fullscale to register
+		accelGyro_Write_Single_Register(AG_CTRL1_XL, &ctrl1_Xl_Curr_Val);
+	}
+	else
+	{
+		stateReturn = AG_ERROR;
+	}
+	return stateReturn;
+}
+
 /**
  * @brief write to single register
  * @param address accessed register's address
