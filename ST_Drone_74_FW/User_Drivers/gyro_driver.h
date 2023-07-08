@@ -9,6 +9,7 @@
 
 #include "stm32f4xx_hal.h"
 #include "mxconstants.h"
+#include <accel_driver.h>
 
 extern SPI_HandleTypeDef hspi2;
 

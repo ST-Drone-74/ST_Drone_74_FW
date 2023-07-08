@@ -150,6 +150,54 @@ uint8_t accel_Set_FullScale(uint8_t fullScale_Selection)
 	return stateReturn;
 }
 
+uint8_t accel_X_Out(int16_t *accelReturnValue)
+{
+	uint8_t stateReturn = AG_OK;
+	uint8_t rx_Data[2] = {};
+	if(accelReturnValue != NULL)
+	{
+		accelGyro_SPI_Read(&hspi2, AG_OUTX_L_XL, rx_Data, sizeof(rx_Data)+1);
+		*accelReturnValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+	}
+	else
+	{
+		stateReturn = AG_ERROR;
+	}
+	return stateReturn;
+}
+
+uint8_t accel_Y_Out(int16_t *accelReturnValue)
+{
+	uint8_t stateReturn = AG_OK;
+	uint8_t rx_Data[2] = {};
+	if(accelReturnValue != NULL)
+	{
+		accelGyro_SPI_Read(&hspi2, AG_OUTY_L_XL, rx_Data, sizeof(rx_Data)+1);
+		*accelReturnValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+	}
+	else
+	{
+		stateReturn = AG_ERROR;
+	}
+	return stateReturn;
+}
+
+uint8_t accel_Z_Out(int16_t *accelReturnValue)
+{
+	uint8_t stateReturn = AG_OK;
+	uint8_t rx_Data[2] = {};
+	if(accelReturnValue != NULL)
+	{
+		accelGyro_SPI_Read(&hspi2, AG_OUTZ_L_XL, rx_Data, sizeof(rx_Data)+1);
+		*accelReturnValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+	}
+	else
+	{
+		stateReturn = AG_ERROR;
+	}
+	return stateReturn;
+}
+
 /**
  * @brief write to single register
  * @param address accessed register's address

@@ -189,6 +189,11 @@ extern uint8_t accelGyro_Read_Device_Name(uint8_t *ptr);
 extern uint8_t accel_Set_Power_Mode(Accel_Odr_Select_e accel_Odr);
 extern uint8_t accel_Set_FullScale(uint8_t fullScale_Selection);
 
+/*ACCELEROMETER OUTPUT VALUE*/
+extern uint8_t accel_X_Out(int16_t *accelReturnValue);
+extern uint8_t accel_Y_Out(int16_t *accelReturnValue);
+extern uint8_t accel_Z_Out(int16_t *accelReturnValue);
+
 /*RW SINGLE REGISTER*/
 extern uint8_t accelGyro_Write_Single_Register(uint8_t address, uint8_t *txData);
 extern uint8_t accelGyro_Read_Single_Register(uint8_t address, uint8_t *rxData);
