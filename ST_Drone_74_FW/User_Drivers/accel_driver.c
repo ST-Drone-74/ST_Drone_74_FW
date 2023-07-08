@@ -198,6 +198,22 @@ uint8_t accel_Z_Out(int16_t *accelReturnValue)
 	return stateReturn;
 }
 
+uint8_t accelGyro_Temp_Out(int16_t *accelTempValue)
+{
+	uint8_t stateReturn = AG_OK;
+	uint8_t rx_Data[2] = {};
+	if(accelTempValue != NULL)
+	{
+		accelGyro_SPI_Read(&hspi2, AG_OUT_TEMP_L, rx_Data, sizeof(rx_Data)+1);
+		*accelTempValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+	}
+	else
+	{
+		stateReturn = AG_ERROR;
+	}
+	return stateReturn;
+}
+
 /**
  * @brief write to single register
  * @param address accessed register's address
