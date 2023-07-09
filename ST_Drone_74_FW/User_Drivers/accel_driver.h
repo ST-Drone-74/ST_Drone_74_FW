@@ -91,7 +91,7 @@ extern SPI_HandleTypeDef hspi2;
 #define AG_OUTY_L_G                      0x24
 #define AG_OUTY_H_G                      0x25
 #define AG_OUTZ_L_G                      0x26
-#define AG_OUTz_H_G                      0x27
+#define AG_OUTZ_H_G                      0x27
 
 //accelerometer output registers
 #define AG_OUTX_L_XL                     0x28

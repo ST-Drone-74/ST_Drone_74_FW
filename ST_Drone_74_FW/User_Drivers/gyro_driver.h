@@ -14,7 +14,10 @@
 extern SPI_HandleTypeDef hspi2;
 
 
-
+/*GYROSCOPE OUTPUT VALUE*/
+extern uint8_t gyro_X_Out(int16_t *gyroReturnValue);
+extern uint8_t gyro_Y_Out(int16_t *gyroReturnValue);
+extern uint8_t gyro_Z_Out(int16_t *gyroReturnValue);
 
 
 #endif /* GYRO_DRIVER_H_ */
