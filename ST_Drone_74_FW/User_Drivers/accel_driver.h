@@ -18,6 +18,7 @@ extern SPI_HandleTypeDef hspi2;
 #ifdef ACCEL_GYRO_LSM6DSL
 
 #define ACCEL_GYRO_DEVICE_NAME           0x6A
+#define ACCEL_GYRO_TEMP_SENSITIVITY      256 // LSB/*C
 /***********************READ-WRITE REGISTER***********************/
 #define AG_FUNC_CFG_ACCESS               0x01 // AG: accel gyro
 
@@ -98,7 +99,7 @@ extern SPI_HandleTypeDef hspi2;
 #define AG_OUTY_L_XL                     0x2A
 #define AG_OUTY_H_XL                     0x2B
 #define AG_OUTZ_L_XL                     0x2C
-#define AG_OUTz_H_XL                     0x2D
+#define AG_OUTZ_H_XL                     0x2D
 
 //sensor hub output registers
 #define AG_SENSORHUB_1_REG               0x2E

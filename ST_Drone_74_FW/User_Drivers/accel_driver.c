@@ -153,11 +153,13 @@ uint8_t accel_Set_FullScale(uint8_t fullScale_Selection)
 uint8_t accel_X_Out(int16_t *accelReturnValue)
 {
 	uint8_t stateReturn = AG_OK;
-	uint8_t rx_Data[2] = {};
+	uint8_t highByte = 0x00;
+	uint8_t lowByte = 0x00;
 	if(accelReturnValue != NULL)
 	{
-		accelGyro_SPI_Read(&hspi2, AG_OUTX_L_XL, rx_Data, sizeof(rx_Data)+1);
-		*accelReturnValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		accelGyro_Read_Single_Register(AG_OUTX_L_XL,  &lowByte);
+		accelGyro_Read_Single_Register(AG_OUTX_H_XL,  &highByte);
+		*accelReturnValue = ((int16_t)highByte)<<8 | (int16_t)lowByte;
 	}
 	else
 	{
@@ -169,11 +171,13 @@ uint8_t accel_X_Out(int16_t *accelReturnValue)
 uint8_t accel_Y_Out(int16_t *accelReturnValue)
 {
 	uint8_t stateReturn = AG_OK;
-	uint8_t rx_Data[2] = {};
+	uint8_t highByte = 0x00;
+	uint8_t lowByte = 0x00;
 	if(accelReturnValue != NULL)
 	{
-		accelGyro_SPI_Read(&hspi2, AG_OUTY_L_XL, rx_Data, sizeof(rx_Data)+1);
-		*accelReturnValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		accelGyro_Read_Single_Register(AG_OUTY_L_XL,  &lowByte);
+		accelGyro_Read_Single_Register(AG_OUTY_H_XL,  &highByte);
+		*accelReturnValue = ((int16_t)highByte)<<8 | (int16_t)lowByte;
 	}
 	else
 	{
@@ -185,11 +189,13 @@ uint8_t accel_Y_Out(int16_t *accelReturnValue)
 uint8_t accel_Z_Out(int16_t *accelReturnValue)
 {
 	uint8_t stateReturn = AG_OK;
-	uint8_t rx_Data[2] = {};
+	uint8_t highByte = 0x00;
+	uint8_t lowByte = 0x00;
 	if(accelReturnValue != NULL)
 	{
-		accelGyro_SPI_Read(&hspi2, AG_OUTZ_L_XL, rx_Data, sizeof(rx_Data)+1);
-		*accelReturnValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		accelGyro_Read_Single_Register(AG_OUTZ_L_XL,  &lowByte);
+		accelGyro_Read_Single_Register(AG_OUTZ_H_XL,  &highByte);
+		*accelReturnValue = ((int16_t)highByte)<<8 | (int16_t)lowByte;
 	}
 	else
 	{
@@ -201,11 +207,15 @@ uint8_t accel_Z_Out(int16_t *accelReturnValue)
 uint8_t accelGyro_Temp_Out(int16_t *accelTempValue)
 {
 	uint8_t stateReturn = AG_OK;
-	uint8_t rx_Data[2] = {};
+	uint8_t highByte = 0x00;
+	uint8_t lowByte = 0x00;
+	uint16_t rawData = 0x00;
 	if(accelTempValue != NULL)
 	{
-		accelGyro_SPI_Read(&hspi2, AG_OUT_TEMP_L, rx_Data, sizeof(rx_Data)+1);
-		*accelTempValue = ((int16_t)rx_Data[1])<<8 | (int16_t)rx_Data[0];
+		accelGyro_Read_Single_Register(AG_OUT_TEMP_L,  &lowByte);
+		accelGyro_Read_Single_Register(AG_OUT_TEMP_H,  &highByte);
+		rawData = ((uint16_t)highByte)<<8 | (uint16_t)lowByte;
+		*accelTempValue = (int16_t)((int16_t)rawData / (int16_t)ACCEL_GYRO_TEMP_SENSITIVITY);
 	}
 	else
 	{
