@@ -224,6 +224,22 @@ uint8_t accelGyro_Temp_Out(int16_t *accelTempValue)
 	return stateReturn;
 }
 
+uint8_t accelGyro_Set_FIFO_Mode_Odr(uint8_t *fifoOdr, uint8_t *fifoMode)
+{
+	uint8_t stateReturn = AG_OK;
+	uint8_t txFifoCtrl5 = 0x00;
+	if((*fifoOdr < 0x0B) && (*fifoMode < 0x08))
+	{
+		txFifoCtrl5 |= ((*fifoOdr)<<3) | (*fifoMode);
+		accelGyro_Write_Single_Register(AG_FIFO_CTRL_5, &txFifoCtrl5);
+	}
+	else
+	{
+		stateReturn = AG_ERROR;
+	}
+	return stateReturn;
+}
+
 /**
  * @brief write to single register
  * @param address accessed register's address

@@ -198,6 +198,9 @@ extern uint8_t accel_Z_Out(int16_t *accelReturnValue);
 /*TEMPERATURE*/
 extern uint8_t accelGyro_Temp_Out(int16_t *accelTempValue);
 
+/*FIFO CONTROL*/
+extern uint8_t accelGyro_Set_FIFO_Mode_Odr(uint8_t *fifoOdr, uint8_t *fifoMode);
+
 /*RW SINGLE REGISTER*/
 extern uint8_t accelGyro_Write_Single_Register(uint8_t address, uint8_t *txData);
 extern uint8_t accelGyro_Read_Single_Register(uint8_t address, uint8_t *rxData);
