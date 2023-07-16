@@ -33,7 +33,7 @@ uint8_t accelGyro_Init_Device(void)
 		accelGyro_Write_Single_Register(AG_CTRL1_XL, &ctrl1_Xl_Register);
 		HAL_Delay(1);
 		/*gyroscope ODR*/
-		ctrl2_G_Register = 0x40; //104Hz normal mode
+		ctrl2_G_Register = 0x42; //104Hz normal mode
 		accelGyro_Write_Single_Register(AG_CTRL2_G, &ctrl2_G_Register);
 		HAL_Delay(1);
 		/*control register 4 config*/
@@ -150,16 +150,18 @@ uint8_t accel_Set_FullScale(uint8_t fullScale_Selection)
 	return stateReturn;
 }
 
-uint8_t accel_X_Out(int16_t *accelReturnValue)
+uint8_t accel_X_Out(float *accelReturnValue)
 {
 	uint8_t stateReturn = AG_OK;
 	uint8_t highByte = 0x00;
 	uint8_t lowByte = 0x00;
+	int16_t accelReturnValue_s16 = 0x00;
 	if(accelReturnValue != NULL)
 	{
 		accelGyro_Read_Single_Register(AG_OUTX_L_XL,  &lowByte);
 		accelGyro_Read_Single_Register(AG_OUTX_H_XL,  &highByte);
-		*accelReturnValue = ((int16_t)highByte)<<8 | (int16_t)lowByte;
+		accelReturnValue_s16 = ((int16_t)highByte)<<8 | (int16_t)lowByte;
+		*accelReturnValue = ((float)accelReturnValue_s16 * ACCEL_SENSITIVITY)/1000.0;
 	}
 	else
 	{
@@ -168,16 +170,18 @@ uint8_t accel_X_Out(int16_t *accelReturnValue)
 	return stateReturn;
 }
 
-uint8_t accel_Y_Out(int16_t *accelReturnValue)
+uint8_t accel_Y_Out(float *accelReturnValue)
 {
 	uint8_t stateReturn = AG_OK;
 	uint8_t highByte = 0x00;
 	uint8_t lowByte = 0x00;
+	int16_t accelReturnValue_s16 = 0x00;
 	if(accelReturnValue != NULL)
 	{
 		accelGyro_Read_Single_Register(AG_OUTY_L_XL,  &lowByte);
 		accelGyro_Read_Single_Register(AG_OUTY_H_XL,  &highByte);
-		*accelReturnValue = ((int16_t)highByte)<<8 | (int16_t)lowByte;
+		accelReturnValue_s16 = ((int16_t)highByte)<<8 | (int16_t)lowByte;
+		*accelReturnValue = ((float)accelReturnValue_s16 * ACCEL_SENSITIVITY)/1000.0;
 	}
 	else
 	{
@@ -186,16 +190,18 @@ uint8_t accel_Y_Out(int16_t *accelReturnValue)
 	return stateReturn;
 }
 
-uint8_t accel_Z_Out(int16_t *accelReturnValue)
+uint8_t accel_Z_Out(float *accelReturnValue)
 {
 	uint8_t stateReturn = AG_OK;
 	uint8_t highByte = 0x00;
 	uint8_t lowByte = 0x00;
+	int16_t accelReturnValue_s16 = 0x00;
 	if(accelReturnValue != NULL)
 	{
 		accelGyro_Read_Single_Register(AG_OUTZ_L_XL,  &lowByte);
 		accelGyro_Read_Single_Register(AG_OUTZ_H_XL,  &highByte);
-		*accelReturnValue = ((int16_t)highByte)<<8 | (int16_t)lowByte;
+		accelReturnValue_s16 = ((int16_t)highByte)<<8 | (int16_t)lowByte;
+		*accelReturnValue = ((float)accelReturnValue_s16 * ACCEL_SENSITIVITY)/1000.0;
 	}
 	else
 	{
@@ -215,7 +221,7 @@ uint8_t accelGyro_Temp_Out(int16_t *accelTempValue)
 		accelGyro_Read_Single_Register(AG_OUT_TEMP_L,  &lowByte);
 		accelGyro_Read_Single_Register(AG_OUT_TEMP_H,  &highByte);
 		rawData = ((uint16_t)highByte)<<8 | (uint16_t)lowByte;
-		*accelTempValue = (int16_t)((int16_t)rawData / (int16_t)ACCEL_GYRO_TEMP_SENSITIVITY);
+		*accelTempValue = (int16_t)((int16_t)rawData / (int16_t)ACCEL_GYRO_TEMP_SENSITIVITY)+25;
 	}
 	else
 	{

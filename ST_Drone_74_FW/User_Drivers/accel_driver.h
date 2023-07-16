@@ -19,6 +19,7 @@ extern SPI_HandleTypeDef hspi2;
 
 #define ACCEL_GYRO_DEVICE_NAME           0x6A
 #define ACCEL_GYRO_TEMP_SENSITIVITY      256 // LSB/*C
+#define ACCEL_SENSITIVITY               (float)0.061 //mg/LSB
 /***********************READ-WRITE REGISTER***********************/
 #define AG_FUNC_CFG_ACCESS               0x01 // AG: accel gyro
 
@@ -191,9 +192,9 @@ extern uint8_t accel_Set_Power_Mode(Accel_Odr_Select_e accel_Odr);
 extern uint8_t accel_Set_FullScale(uint8_t fullScale_Selection);
 
 /*ACCELEROMETER OUTPUT VALUE*/
-extern uint8_t accel_X_Out(int16_t *accelReturnValue);
-extern uint8_t accel_Y_Out(int16_t *accelReturnValue);
-extern uint8_t accel_Z_Out(int16_t *accelReturnValue);
+extern uint8_t accel_X_Out(float *accelReturnValue);
+extern uint8_t accel_Y_Out(float *accelReturnValue);
+extern uint8_t accel_Z_Out(float *accelReturnValue);
 
 /*TEMPERATURE*/
 extern uint8_t accelGyro_Temp_Out(int16_t *accelTempValue);

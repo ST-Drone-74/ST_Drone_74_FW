@@ -13,11 +13,11 @@
 
 extern SPI_HandleTypeDef hspi2;
 
-
+#define GYRO_SENSITIVITY               (float)4.375 //mdps/LSB
 /*GYROSCOPE OUTPUT VALUE*/
-extern uint8_t gyro_X_Out(int16_t *gyroReturnValue);
-extern uint8_t gyro_Y_Out(int16_t *gyroReturnValue);
-extern uint8_t gyro_Z_Out(int16_t *gyroReturnValue);
+extern uint8_t gyro_X_Out(float *gyroReturnValue);
+extern uint8_t gyro_Y_Out(float *gyroReturnValue);
+extern uint8_t gyro_Z_Out(float *gyroReturnValue);
 
 
 #endif /* GYRO_DRIVER_H_ */
