@@ -29,5 +29,5 @@ extern SensorAxes_t gyroBleSentValue_st;
 
 /*Function*/
 extern void all_Sensor_Init(void);
-
+extern void sensorUpdateValue(uint8_t checkFlag);
 #endif /* SENSOR_MANAGEMENT_H_ */

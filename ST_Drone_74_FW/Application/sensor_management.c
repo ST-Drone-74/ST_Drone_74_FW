@@ -67,3 +67,40 @@ void all_Sensor_Init(void)
 		sensorInitState = SENSOR_INIT_ERROR;
 	}
 }
+
+void sensorUpdateValue(uint8_t checkFlag)
+{
+	static uint8_t counterUp_u8=0x00;
+	float accelGetValue=0x00;
+	if(checkFlag == TRUE)
+	{
+		counterUp_u8++;
+		switch (counterUp_u8)
+		{
+			case 1://handle accel X value
+			accel_X_Out(&accelGetValue);
+			accelBleSentValue_st.AXIS_X = ((int32_t)accelGetValue)*1000;
+			break;
+
+			case 2://handle accel Y value
+			accel_Y_Out(&accelGetValue);
+			accelBleSentValue_st.AXIS_Y = ((int32_t)accelGetValue)*1000;
+			break;
+
+			case 3://handle accel Z value
+			accel_Z_Out(&accelGetValue);
+			accelBleSentValue_st.AXIS_Z = ((int32_t)accelGetValue)*1000;
+			break;
+
+			case 4://handle barometer
+			break;
+
+			default:
+			counterUp_u8 = 0x00;
+		}
+	}
+	else
+	{
+
+	}
+}
