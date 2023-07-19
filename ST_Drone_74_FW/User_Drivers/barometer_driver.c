@@ -45,7 +45,7 @@ uint8_t baro_Init_Device(void)
 		baro_Set_FIFO_Mode(set_Fifo_Mode, set_Level);
 		HAL_Delay(1);
     }
-    return 0;
+    return SENSOR_OK;
 }
 
 /**

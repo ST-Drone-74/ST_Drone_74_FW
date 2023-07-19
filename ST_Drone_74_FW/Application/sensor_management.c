@@ -5,6 +5,8 @@
  *      Author: Mai Huynh Long Nhan
  */
 #include <sensor_management.h>
+/*Golbal sensor init*/
+sensorInitState_e sensorInitState = SENSOR_INIT_OK;
 
 /*Global sensor varibales for BLE updating*/
 baroData_st baroBleSentValue_st =
@@ -36,10 +38,32 @@ SensorAxes_t gyroBleSentValue_st =
 
 void all_Sensor_Init(void)
 {
+	uint8_t getSensorInitFail = 0x00;
 	/*init compass lis2dmdl*/
-	compass_Init_Device();
+	if(compass_Init_Device() != 1)
+	{
+		/*if init fail*/
+		getSensorInitFail++;
+	}
 	/*init barometer lps22hd*/
-	baro_Init_Device();
+	if(baro_Init_Device() != 1)
+	{
+		/*if init fail*/
+		getSensorInitFail++;
+	}
 	/*init accel gyro lsm6dsl*/
-	accelGyro_Init_Device();
+	if(accelGyro_Init_Device() != 1)
+	{
+		/*if init fail*/
+		getSensorInitFail++;
+	}
+
+	if(getSensorInitFail == 0)
+	{	
+		sensorInitState = SENSOR_INIT_OK;
+	}
+	else
+	{
+		sensorInitState = SENSOR_INIT_ERROR;
+	}
 }

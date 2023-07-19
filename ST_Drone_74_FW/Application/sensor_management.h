@@ -15,11 +15,18 @@
 #include "motor_driver.h"
 #include "sensor_service.h"
 
+typedef enum
+{
+    SENSOR_INIT_ERROR,
+    SENSOR_INIT_OK
+}sensorInitState_e;
+
 /*Variables*/
 extern baroData_st baroBleSentValue_st;
 extern SensorAxes_t magBleSentValue_st;
 extern SensorAxes_t accelBleSentValue_st;
 extern SensorAxes_t gyroBleSentValue_st;
+
 /*Function*/
 extern void all_Sensor_Init(void);
 
