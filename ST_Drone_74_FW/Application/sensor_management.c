@@ -68,31 +68,65 @@ void all_Sensor_Init(void)
 	}
 }
 
-void sensorUpdateValue(uint8_t checkFlag)
+void sensorBleUpdateValue(uint8_t checkFlag)
 {
 	static uint8_t counterUp_u8=0x00;
-	float accelGetValue=0x00;
+	float sensorGetValue_f=0x00;
+
 	if(checkFlag == TRUE)
 	{
 		counterUp_u8++;
 		switch (counterUp_u8)
 		{
 			case 1://handle accel X value
-			accel_X_Out(&accelGetValue);
-			accelBleSentValue_st.AXIS_X = ((int32_t)accelGetValue)*1000;
+			accel_X_Out(&sensorGetValue_f);
+			accelBleSentValue_st.AXIS_X = ((int32_t)sensorGetValue_f);
 			break;
 
 			case 2://handle accel Y value
-			accel_Y_Out(&accelGetValue);
-			accelBleSentValue_st.AXIS_Y = ((int32_t)accelGetValue)*1000;
+			accel_Y_Out(&sensorGetValue_f);
+			accelBleSentValue_st.AXIS_Y = ((int32_t)sensorGetValue_f);
 			break;
 
 			case 3://handle accel Z value
-			accel_Z_Out(&accelGetValue);
-			accelBleSentValue_st.AXIS_Z = ((int32_t)accelGetValue)*1000;
+			accel_Z_Out(&sensorGetValue_f);
+			accelBleSentValue_st.AXIS_Z = ((int32_t)sensorGetValue_f);
 			break;
 
-			case 4://handle barometer
+			case 4://handle gyro X
+			gyro_X_Out(&sensorGetValue_f);
+			gyroBleSentValue_st.AXIS_X = ((int32_t)sensorGetValue_f);
+			break;
+
+			case 5://handle gyro y
+			gyro_Y_Out(&sensorGetValue_f);
+			gyroBleSentValue_st.AXIS_Y = ((int32_t)sensorGetValue_f);
+			break;
+
+			case 6://handle gyro z
+			gyro_Z_Out(&sensorGetValue_f);
+			gyroBleSentValue_st.AXIS_Z = ((int32_t)sensorGetValue_f);
+			break;
+
+			case 7://handle magnetic x
+			compass_Read_X_Data(&sensorGetValue_f);
+			magBleSentValue_st.AXIS_X = ((int32_t)sensorGetValue_f);
+			break;
+
+			case 8://handle magnetic y
+			compass_Read_Y_Data(&sensorGetValue_f);
+			magBleSentValue_st.AXIS_Y = ((int32_t)sensorGetValue_f);
+			break;
+
+			case 9://handle magnetic z
+			compass_Read_Z_Data(&sensorGetValue_f);
+			magBleSentValue_st.AXIS_Z = ((int32_t)sensorGetValue_f);
+			break;
+
+			case 10://handle barometer
+			baro_HPA_Pressure(&sensorGetValue_f);
+			baro_Read_Temperature(&baroBleSentValue_st.TEMP);
+			baroBleSentValue_st.PRESSURE = ((int32_t)sensorGetValue_f);
 			break;
 
 			default:

@@ -139,7 +139,7 @@ uint8_t sys_Prd_Clk = FALSE;
 		SendBattEnvData(baroBleSentValue_st.PRESSURE, baroBleSentValue_st.TEMP, vBat_ADC_Value);
     }
     /*sensor get value handler*/
-    sensorUpdateValue(sys_Prd_Clk);
+    sensorBleUpdateValue(sys_Prd_Clk);
   }
   /* USER CODE END 3 */
 

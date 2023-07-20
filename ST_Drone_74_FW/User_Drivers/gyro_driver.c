@@ -17,7 +17,7 @@ uint8_t gyro_X_Out(float *gyroReturnValue)
 		accelGyro_Read_Single_Register(AG_OUTX_L_G,  &lowByte);
 		accelGyro_Read_Single_Register(AG_OUTX_H_G,  &highByte);
 		gyroReturnValue_s16 = ((int16_t)highByte)<<8 | (int16_t)lowByte;
-		*gyroReturnValue = ((float)gyroReturnValue_s16 * GYRO_SENSITIVITY)/1000.0;
+		*gyroReturnValue = ((float)gyroReturnValue_s16 * GYRO_SENSITIVITY);
 	}
 	else
 	{
@@ -37,7 +37,7 @@ uint8_t gyro_Y_Out(float *gyroReturnValue)
 		accelGyro_Read_Single_Register(AG_OUTY_L_G,  &lowByte);
 		accelGyro_Read_Single_Register(AG_OUTY_H_G,  &highByte);
 		gyroReturnValue_s16 = ((int16_t)highByte)<<8 | (int16_t)lowByte;
-		*gyroReturnValue = ((float)gyroReturnValue_s16 * GYRO_SENSITIVITY)/1000.0;
+		*gyroReturnValue = ((float)gyroReturnValue_s16 * GYRO_SENSITIVITY);
 	}
 	else
 	{
@@ -57,7 +57,7 @@ uint8_t gyro_Z_Out(float *gyroReturnValue)
 		accelGyro_Read_Single_Register(AG_OUTZ_L_G,  &lowByte);
 		accelGyro_Read_Single_Register(AG_OUTZ_H_G,  &highByte);
 		gyroReturnValue_s16 = ((int16_t)highByte)<<8 | (int16_t)lowByte;
-		*gyroReturnValue = ((float)gyroReturnValue_s16 * GYRO_SENSITIVITY)/1000.0;
+		*gyroReturnValue = ((float)gyroReturnValue_s16 * GYRO_SENSITIVITY);
 	}
 	else
 	{
